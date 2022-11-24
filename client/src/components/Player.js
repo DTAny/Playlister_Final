@@ -22,25 +22,25 @@ export default function Player() {
     </Typography>
 
     const handlePreviousSong = () => {
-        let length = store.playingList.length;
+        let length = store.playingSongs.length;
         let index = (store.playingSongIndex + length - 1) % length;
-        store.startPlaying(index, store.playingList, store.playingList[index].name);
+        store.startPlaying(index, store.playingSongs, store.playingList);
     }
     const handleStartPlaying = () => {
         store.player.playVideo();
-        store.startPlaying(store.playingSongIndex, store.playingList, store.playingListName);
+        store.startPlaying(store.playingSongIndex, store.playingSongs, store.playingList);
     }
     const handlePausePlaying = () => {
         store.player.pauseVideo();
         store.pausePlaying();
     }
     const handleNextSong = () => {
-        let length = store.playingList.length;
+        let length = store.playingSongs.length;
         let index = (store.playingSongIndex + 1) % length
-        store.startPlaying(index, store.playingList, store.playingList[index].name);
+        store.startPlaying(index, store.playingSongs, store.playingList);
     }
 
-    if (store.playingList.length > 0) {
+    if (store.playingSongs.length > 0) {
         playerPart = <YouTubePlayer />
         controlPanel = <Grid container sx={{height: '100%'}}>
             <Grid item md={12}>
@@ -54,16 +54,16 @@ export default function Player() {
                     Now Playing
                 </Typography>
                 <Typography variant='h5' sx={{fontFamily: "'Segoe Script'"}}>
-                    {`Playlist: ${store.playingListName}`}
+                    {`Playlist: ${store.playingList.name}`}
                 </Typography>
                 <Typography variant='h5' sx={{fontFamily: "'Segoe Script'"}}>
                     {`Song #: ${store.playingSongIndex + 1}`}
                 </Typography>
                 <Typography variant='h5' sx={{fontFamily: "'Segoe Script'"}}>
-                    {`Title: ${store.playingList[store.playingSongIndex].title}`}
+                    {`Title: ${store.playingSongs[store.playingSongIndex].title}`}
                 </Typography>
                 <Typography variant='h5' sx={{fontFamily: "'Segoe Script'"}}>
-                    {`Artist: ${store.playingList[store.playingSongIndex].artist}`}
+                    {`Artist: ${store.playingSongs[store.playingSongIndex].artist}`}
                 </Typography>
             </Grid>
             <Grid item md={12} sx={{p: '0.5em', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '20%'}}>

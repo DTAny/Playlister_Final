@@ -45,9 +45,9 @@ function GlobalStoreContextProvider(props) {
         currentSong : null,
         status: Status.NONE,
         isPlaying: false,
-        playingList: [],
+        playingSongs: [],
         playingSongIndex: -1,
-        playingListName: null,
+        playingList: null,
         markedList: null,
         player: null,
     });
@@ -69,9 +69,9 @@ function GlobalStoreContextProvider(props) {
                     currentSong : null,
                     status: Status.NONE,
                     isPlaying: false,
-                    playingList: store.playingList,
+                    playingSongs: store.playingSongs,
                     playingSongIndex: store.playingSongIndex,
-                    playingListName: store.playingListName,
+                    playingList: store.playingList,
                     markedList: null,
                     player: store.player
                 });
@@ -84,9 +84,9 @@ function GlobalStoreContextProvider(props) {
                     currentSong : null,
                     status: Status.NONE,
                     isPlaying: store.isPlaying,
-                    playingList: store.playingList,
+                    playingSongs: store.playingSongs,
                     playingSongIndex: store.playingSongIndex,
-                    playingListName: store.playingListName,
+                    playingList: store.playingList,
                     markedList: null,
                     player: store.player
                 })
@@ -99,9 +99,9 @@ function GlobalStoreContextProvider(props) {
                     currentSong : null,
                     status: Status.NONE,
                     isPlaying: store.isPlaying,
-                    playingList: store.playingList,
+                    playingSongs: store.playingSongs,
                     playingSongIndex: store.playingSongIndex,
-                    playingListName: store.playingListName,
+                    playingList: store.playingList,
                     markedList: null,
                     player: store.player
                 })
@@ -114,9 +114,9 @@ function GlobalStoreContextProvider(props) {
                     currentSong : null,
                     status: Status.NONE,
                     isPlaying: store.isPlaying,
-                    playingList: store.playingList,
+                    playingSongs: store.playingSongs,
                     playingSongIndex: store.playingSongIndex,
-                    playingListName: store.playingListName,
+                    playingList: store.playingList,
                     markedList: null,
                     player: store.player
                 });
@@ -129,9 +129,9 @@ function GlobalStoreContextProvider(props) {
                     currentSong : null,
                     status: Status.NONE,
                     isPlaying: store.isPlaying,
-                    playingList: store.playingList,
+                    playingSongs: store.playingSongs,
                     playingSongIndex: store.playingSongIndex,
-                    playingListName: store.playingListName,
+                    playingList: store.playingList,
                     markedList: null,
                     player: store.player
                 });
@@ -144,9 +144,9 @@ function GlobalStoreContextProvider(props) {
                     currentSong : null,
                     status: Status.DELETING_LIST,
                     isPlaying: store.isPlaying,
-                    playingList: store.playingList,
+                    playingSongs: store.playingSongs,
                     playingSongIndex: store.playingSongIndex,
-                    playingListName: store.playingListName,
+                    playingList: store.playingList,
                     markedList: payload,
                     player: store.player
                 });
@@ -159,9 +159,9 @@ function GlobalStoreContextProvider(props) {
                     currentSong : null,
                     status: Status.NONE,
                     isPlaying: store.isPlaying,
-                    playingList: store.playingList,
+                    playingSongs: store.playingSongs,
                     playingSongIndex: store.playingSongIndex,
-                    playingListName: store.playingListName,
+                    playingList: store.playingList,
                     markedList: null,
                     player: store.player
                 });
@@ -174,9 +174,9 @@ function GlobalStoreContextProvider(props) {
                     currentSong : payload.currentSong,
                     status: Status.EDITING_SONG,
                     isPlaying: store.isPlaying,
-                    playingList: store.playingList,
+                    playingSongs: store.playingSongs,
                     playingSongIndex: store.playingSongIndex,
-                    playingListName: store.playingListName,
+                    playingList: store.playingList,
                     markedList: null,
                     player: store.player
                 });
@@ -189,9 +189,9 @@ function GlobalStoreContextProvider(props) {
                     currentSong : payload.currentSong,
                     status: Status.REMOVING_SONG,
                     isPlaying: store.isPlaying,
-                    playingList: store.playingList,
+                    playingSongs: store.playingSongs,
                     playingSongIndex: store.playingSongIndex,
-                    playingListName: store.playingListName,
+                    playingList: store.playingList,
                     markedList: null,
                     player: store.player
                 });
@@ -204,9 +204,9 @@ function GlobalStoreContextProvider(props) {
                     currentSong : null,
                     status: Status.NONE,
                     isPlaying: store.isPlaying,
-                    playingList: store.playingList,
+                    playingSongs: store.playingSongs,
                     playingSongIndex: store.playingSongIndex,
-                    playingListName: store.playingListName,
+                    playingList: store.playingList,
                     markedList: null,
                     player: store.player
                 });
@@ -219,9 +219,9 @@ function GlobalStoreContextProvider(props) {
                     currentSong : null,
                     status: Status.NONE,
                     isPlaying: true,
-                    playingList: payload.playingList,
+                    playingSongs: payload.playingSongs,
                     playingSongIndex: payload.playingSongIndex,
-                    playingListName: payload.playingListName,
+                    playingList: payload.playingList,
                     markedList: null,
                     player: store.player
                 });
@@ -234,9 +234,9 @@ function GlobalStoreContextProvider(props) {
                     currentSong : null,
                     status: Status.NONE,
                     isPlaying: false,
-                    playingList: store.playingList,
+                    playingSongs: store.playingSongs,
                     playingSongIndex: store.playingSongIndex,
-                    playingListName: store.playingListName,
+                    playingList: store.playingList,
                     markedList: null,
                     player: store.player
                 });
@@ -249,9 +249,9 @@ function GlobalStoreContextProvider(props) {
                     currentSong : null,
                     status: Status.NONE,
                     isPlaying: false,
-                    playingList: store.playingList,
+                    playingSongs: store.playingSongs,
                     playingSongIndex: store.playingSongIndex,
-                    playingListName: store.playingListName,
+                    playingList: store.playingList,
                     markedList: null,
                     player: payload.player
                 });
@@ -317,7 +317,7 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    store.loadListPublished = function () {
+    store.loadListPublished = async () => {
         async function asyncLoadListPublished() {
             const response = await api.getAllPlaylistsPublished();
             if (response.data.success) {
@@ -554,15 +554,34 @@ function GlobalStoreContextProvider(props) {
             }
         })
     }
-    store.startPlaying = (index, list, name) => {
-        storeReducer({
-            type: GlobalStoreActionType.START_PLAYING,
-            payload: {
-                playingSongIndex: index,
-                playingList: list,
-                playingListName: name
+    store.startPlaying = (index, songs, list, plays = null, setPlays = null) => {
+        async function asyncStartPlaying(){
+            if (store.playingList === null || list.pid !== store.playingList.pid){
+                let response = await api.incrPlaysById(list.pid);
+                if (response.data.success){
+                    if (plays !== null && setPlays !== null) setPlays(plays + 1);
+                    storeReducer({
+                        type: GlobalStoreActionType.START_PLAYING,
+                        payload: {
+                            playingSongIndex: index,
+                            playingSongs: songs,
+                            playingList: list
+                        }
+                    })
+                }
             }
-        })
+            else {
+                storeReducer({
+                    type: GlobalStoreActionType.START_PLAYING,
+                    payload: {
+                        playingSongIndex: index,
+                        playingSongs: songs,
+                        playingList: list
+                    }
+                })
+            }
+        }
+        asyncStartPlaying();
     }
     store.pausePlaying = () => {
         storeReducer({

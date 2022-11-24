@@ -9,7 +9,7 @@ export default function YouTubePlayer() {
     //     "8RbXIMZmVv8",
     //     "8UbNbor3OqQ"
     // ];
-    let playlist = store.playingList.map((song) => song.youtubeId);
+    let playlist = store.playingSongs.map((song) => song.youtubeId);
 
     // THIS IS THE INDEX OF THE SONG CURRENTLY IN USE IN THE PLAYLIST
     let playingSongIndex = store.playingSongIndex;
@@ -55,10 +55,10 @@ export default function YouTubePlayer() {
             // THE VIDEO HAS COMPLETED PLAYING
             console.log("0 Video ended");
             incSong();
-            store.startPlaying(playingSongIndex, store.playingList, store.playingListName);
+            store.startPlaying(playingSongIndex, store.playingSongs, store.playingList);
             loadAndPlayCurrentSong(player);
         } else if (playerStatus === 1) {
-            store.startPlaying(playingSongIndex, store.playingList, store.playingListName);
+            store.startPlaying(playingSongIndex, store.playingSongs, store.playingList);
             // THE VIDEO IS PLAYED
             console.log("1 Video played");
         } else if (playerStatus === 2) {

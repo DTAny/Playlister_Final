@@ -18,6 +18,7 @@ function PublicListCard(props) {
     const { auth } = useContext(AuthContext);
     const { list } = props;
     const [expanded, setExpanded] = useState(false);
+    const [plays, setPlays] = useState(0);
 
     const ExpandMore = styled((props) => {
         const { expand, ...other } = props;
@@ -31,26 +32,23 @@ function PublicListCard(props) {
     }));
 
     let sortedSongs = [];
-
-    const getSortedSongs = () => {
-        return sortedSongs;
-    }
-
-    const songCards = list.songsOrder.map((sid, index)=>{
+    list.songsOrder.forEach((sid)=>{
         for (let i = 0; i < list.Songs.length; i++){
             let song = list.Songs[i]
             if (song.sid.toString() === sid) {
                 sortedSongs.push(song);
-                return <PublicSongCard key={"song-" + song.sid} index={index} song={song} getSortedSongs={getSortedSongs} listName={list.name} />
             }
         }
-        return "";
+    });
+
+    const songCards = sortedSongs.map((song, index)=>{
+        return <PublicSongCard key={"song-" + song.sid} index={index} song={song} sortedSongs={sortedSongs} list={list} plays={plays} setPlays={setPlays} />
     })
 
-    const isPlaying = store.playingSongIndex !== -1 && store.playingList.length > 0 && store.playingList[store.playingSongIndex].PlaylistPid === list.pid;
+    const isPlaying = store.playingSongIndex !== -1 && store.playingSongs.length > 0 && store.playingSongs[store.playingSongIndex].PlaylistPid === list.pid;
 
     const handleStartPlaying = () => {
-        store.startPlaying(0, sortedSongs, list.name);
+        store.startPlaying(0, sortedSongs, list, plays, setPlays);
     }
 
     const handleExpandClick = () => {
@@ -104,7 +102,7 @@ function PublicListCard(props) {
                             </Typography>
                             <Box sx={{flex: 1}}/>
                             <Typography color={'GrayText'}>
-                                {`Listens ${list.plays}`}
+                                {`Listens ${list.plays + plays}`}
                             </Typography>
                         </Box>
                         <Divider/>

@@ -5,13 +5,13 @@ import GlobalStoreContext from '../store';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 
 function PublicSongCard(props) {
-    const { song, index, getSortedSongs, listName } = props;
+    const { song, index, sortedSongs, list, plays, setPlays } = props;
     const { store } = useContext(GlobalStoreContext);
 
-    const isPlaying = store.playingSongIndex !== -1 && store.playingList.length > 0 && store.playingList[store.playingSongIndex].sid === song.sid;
+    const isPlaying = store.playingSongIndex !== -1 && store.playingSongs.length > 0 && store.playingSongs[store.playingSongIndex].sid === song.sid;
 
     const handleStartPlaying = () => {
-        store.startPlaying(index, getSortedSongs(), listName);
+        store.startPlaying(index, sortedSongs, list, plays, setPlays);
     }
 
     let cardElement =

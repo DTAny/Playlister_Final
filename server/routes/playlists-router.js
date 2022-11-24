@@ -23,4 +23,7 @@ router.put('/playlist/:id/like', auth.verify, PlaylistController.editLike)
 
 router.post('/playlist/:id/publish', auth.verify, PlaylistController.publishPlaylist)
 
+router.put('/playlist/:id/play', PlaylistController.incrPlays)
+
+
 module.exports = router

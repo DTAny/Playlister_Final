@@ -463,7 +463,7 @@ editLike = async (req, res) => {
 }
 publishPlaylist = async (req, res) => {
     console.log("Publish Playlist with id: " + JSON.stringify(req.params.id));
-    let playlist = await Playlist.findByPk(req.params.id, {include: Song});
+    let playlist = await Playlist.findByPk(req.params.id);
     if (!playlist) {
         return res.status(404).json({
             message: 'Playlist not found!',
@@ -480,6 +480,23 @@ publishPlaylist = async (req, res) => {
     playlist.published = true;
     playlist.publishedAt = Date.now();
     await playlist.save();
+    return res.status(200).json({
+        success: true
+    });
+}
+incrPlays = async (req, res) => {
+    console.log("Play Playlist with id: " + JSON.stringify(req.params.id));
+    let playlist = await Playlist.findByPk(req.params.id);
+    if (!playlist) {
+        return res.status(404).json({
+            message: 'Playlist not found!',
+        });
+    }
+    if (!playlist.published){
+        console.log("Playlist did not publish.");
+        return res.status(400).json({ success: false, description: "Playlist did not publish."});
+    }
+    await playlist.increment('plays');
     return res.status(200).json({
         success: true
     });
@@ -501,4 +518,5 @@ module.exports = {
     deleteLike,
     editLike,
     publishPlaylist,
+    incrPlays,
 }
