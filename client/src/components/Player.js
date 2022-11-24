@@ -57,7 +57,7 @@ export default function Player() {
     };
 
     if (comments.length > 0) {
-        commentsPart = <List disablePadding={true}>
+        commentsPart = <List hidden={tab !== 1} disablePadding={true} sx={{height: '100%'}}>
             {comments.map((comment) => <PublicCommentCard key={`comment-${comment.cid}`} comment={comment}/>)}
         </List>
     }
@@ -111,7 +111,7 @@ export default function Player() {
                     <Tab label="Comment" />
                 </Tabs>
             </Grid>
-            <Grid item md={12} sx={{height: 'calc(100% - 9em)', overflowY: 'scroll', borderTop: '#A6B0B26E solid 2px', borderBottom: '#A6B0B26E solid 2px', p: '0.5em'}}>
+            <Grid item md={12} sx={{height: 'calc(32vh - 10em)', overflowY: 'scroll', borderTop: '#A6B0B26E solid 2px', borderBottom: '#A6B0B26E solid 2px', p: '0.5em'}}>
                 <Box hidden={tab !== 0} sx={{height: '100%'}}>
                     <Typography variant='h5' textAlign={'center'} sx={{fontFamily: "'Segoe Script'"}}>
                         Now Playing
@@ -129,9 +129,7 @@ export default function Player() {
                         {`Artist: ${store.playingSongs[store.playingSongIndex].artist}`}
                     </Typography>
                 </Box>
-                <Box hidden={tab !== 1} sx={{height: '100%'}}>
-                    {commentsPart}
-                </Box>
+                {commentsPart}
             </Grid>
             <Grid item md={12} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '15%'}}>
                 <Box hidden={tab !== 0} sx={{width: '50%'}}>
