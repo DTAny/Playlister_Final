@@ -501,6 +501,23 @@ incrPlays = async (req, res) => {
         success: true
     });
 }
+getComments = async (req, res) => {
+    console.log("Play Playlist with id: " + JSON.stringify(req.params.id));
+    let playlist = await Playlist.findByPk(req.params.id, {include: Comment});
+    if (!playlist) {
+        return res.status(404).json({
+            message: 'Playlist not found!',
+        });
+    }
+    if (!playlist.published){
+        console.log("Playlist did not publish.");
+        return res.status(400).json({ success: false, description: "Playlist did not publish."});
+    }
+    return res.status(200).json({
+        success: true,
+        comments: playlist.Comments
+    });
+}
 
 module.exports = {
     createPlaylist,
@@ -519,4 +536,5 @@ module.exports = {
     editLike,
     publishPlaylist,
     incrPlays,
+    getComments,
 }

@@ -16,6 +16,7 @@ router.delete('/playlist/:id/song/:index', auth.verify, PlaylistController.delet
 router.put('/playlist/:id/song/:index', auth.verify, PlaylistController.editSong)
 
 router.post('/playlist/:id/comment', auth.verify, PlaylistController.addComment)
+router.get('/playlist/:id/comment', PlaylistController.getComments)
 
 router.post('/playlist/:id/like', auth.verify, PlaylistController.addLike)
 router.delete('/playlist/:id/like', auth.verify, PlaylistController.deleteLike)

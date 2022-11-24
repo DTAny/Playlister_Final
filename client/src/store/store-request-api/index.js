@@ -39,6 +39,7 @@ export const addCommentById = (id, content) => {
         content: content
     })
 }
+export const getCommentsById = (id) => api.get(`/playlist/${id}/comment`)
 export const addLikeById = (id, isLike) => {
     return api.post(`/playlist/${id}/like`, {
         isLike: isLike
@@ -63,6 +64,7 @@ const apis = {
     deleteSongById,
     editSongById,
     addCommentById,
+    getCommentsById,
     addLikeById,
     deleteLikeById,
     editLikeById,

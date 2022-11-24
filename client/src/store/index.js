@@ -25,7 +25,8 @@ export const GlobalStoreActionType = {
     HIDE_MODALS: "HIDE_MODALS",
     START_PLAYING: "START_PLAYING",
     PAUSE_PLAYING: "PAUSE_PLAYING",
-    PLAYER_READY: "PLAYER_READY"
+    PLAYER_READY: "PLAYER_READY",
+    LOAD_COMMENTS: "LOAD_COMMENTS",
 }
 
 const tps = new jsTPS();
@@ -73,7 +74,7 @@ function GlobalStoreContextProvider(props) {
                     playingSongIndex: store.playingSongIndex,
                     playingList: store.playingList,
                     markedList: null,
-                    player: store.player
+                    player: store.player,
                 });
             }
             case GlobalStoreActionType.CLOSE_CURRENT_LIST: {
@@ -88,7 +89,7 @@ function GlobalStoreContextProvider(props) {
                     playingSongIndex: store.playingSongIndex,
                     playingList: store.playingList,
                     markedList: null,
-                    player: store.player
+                    player: store.player,
                 })
             }
             case GlobalStoreActionType.CREATE_NEW_LIST: {                
@@ -103,7 +104,7 @@ function GlobalStoreContextProvider(props) {
                     playingSongIndex: store.playingSongIndex,
                     playingList: store.playingList,
                     markedList: null,
-                    player: store.player
+                    player: store.player,
                 })
             }
             case GlobalStoreActionType.LOAD_LIST_PUBLISHED: {
@@ -118,7 +119,7 @@ function GlobalStoreContextProvider(props) {
                     playingSongIndex: store.playingSongIndex,
                     playingList: store.playingList,
                     markedList: null,
-                    player: store.player
+                    player: store.player,
                 });
             }
             case GlobalStoreActionType.LOAD_LIST_PRIVATE: {
@@ -133,7 +134,7 @@ function GlobalStoreContextProvider(props) {
                     playingSongIndex: store.playingSongIndex,
                     playingList: store.playingList,
                     markedList: null,
-                    player: store.player
+                    player: store.player,
                 });
             }
             case GlobalStoreActionType.MARK_LIST_FOR_DELETION: {
@@ -148,7 +149,7 @@ function GlobalStoreContextProvider(props) {
                     playingSongIndex: store.playingSongIndex,
                     playingList: store.playingList,
                     markedList: payload,
-                    player: store.player
+                    player: store.player,
                 });
             }
             case GlobalStoreActionType.SET_CURRENT_LIST: {
@@ -163,7 +164,7 @@ function GlobalStoreContextProvider(props) {
                     playingSongIndex: store.playingSongIndex,
                     playingList: store.playingList,
                     markedList: null,
-                    player: store.player
+                    player: store.player,
                 });
             }
             case GlobalStoreActionType.EDIT_SONG: {
@@ -178,7 +179,7 @@ function GlobalStoreContextProvider(props) {
                     playingSongIndex: store.playingSongIndex,
                     playingList: store.playingList,
                     markedList: null,
-                    player: store.player
+                    player: store.player,
                 });
             }
             case GlobalStoreActionType.REMOVE_SONG: {
@@ -193,7 +194,7 @@ function GlobalStoreContextProvider(props) {
                     playingSongIndex: store.playingSongIndex,
                     playingList: store.playingList,
                     markedList: null,
-                    player: store.player
+                    player: store.player,
                 });
             }
             case GlobalStoreActionType.HIDE_MODALS: {
@@ -208,7 +209,7 @@ function GlobalStoreContextProvider(props) {
                     playingSongIndex: store.playingSongIndex,
                     playingList: store.playingList,
                     markedList: null,
-                    player: store.player
+                    player: store.player,
                 });
             }
             case GlobalStoreActionType.START_PLAYING: {
@@ -223,7 +224,7 @@ function GlobalStoreContextProvider(props) {
                     playingSongIndex: payload.playingSongIndex,
                     playingList: payload.playingList,
                     markedList: null,
-                    player: store.player
+                    player: store.player,
                 });
             }
             case GlobalStoreActionType.PAUSE_PLAYING: {
@@ -238,7 +239,7 @@ function GlobalStoreContextProvider(props) {
                     playingSongIndex: store.playingSongIndex,
                     playingList: store.playingList,
                     markedList: null,
-                    player: store.player
+                    player: store.player,
                 });
             }
             case GlobalStoreActionType.PLAYER_READY: {
@@ -253,7 +254,7 @@ function GlobalStoreContextProvider(props) {
                     playingSongIndex: store.playingSongIndex,
                     playingList: store.playingList,
                     markedList: null,
-                    player: payload.player
+                    player: payload.player,
                 });
             }
             default:
@@ -588,6 +589,24 @@ function GlobalStoreContextProvider(props) {
             type: GlobalStoreActionType.PAUSE_PLAYING,
             payload: {}
         })
+    }
+    store.loadComments = (id, setComments) => {
+        async function asyncLoadComments(id){
+            let response = await api.getCommentsById(id);
+            if (response.data.success) {
+                setComments(response.data.comments);
+            }
+        }
+        asyncLoadComments(id);
+    }
+    store.addComment = (id, content, setComments) => {
+        async function asyncAddComment(id, content, setComments){
+            let response = await api.addCommentById(id, content);
+            if (response.data.success) {
+                store.loadComments(id, setComments);
+            }
+        }
+        asyncAddComment(id, content, setComments);
     }
 
     return (
