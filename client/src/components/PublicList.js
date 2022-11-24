@@ -58,17 +58,17 @@ export default function PublicList(props) {
     }
     else if (sortMode === 3){
         sortedList = sortedList.sort((a, b)=>{
-            return a.plays - b.plays;
+            return b.plays - a.plays;
         })
     }
     else if (sortMode === 4){
         sortedList = sortedList.sort((a, b)=>{
-            return a.likes - b.likes;
+            return b.likes - a.likes;
         })
     }
     else if (sortMode === 5){
         sortedList = sortedList.sort((a, b)=>{
-            return a.dislikes - b.dislikes;
+            return b.dislikes - a.dislikes;
         })
     }
     let playlists = <Box sx={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
