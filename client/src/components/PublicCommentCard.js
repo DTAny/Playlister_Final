@@ -1,5 +1,5 @@
 import ListItem from '@mui/material/ListItem';
-import { Box, Card, CardContent, CardHeader, Grid, Typography} from '@mui/material';
+import { Box, Card, CardContent, Typography} from '@mui/material';
 
 function PublicCommentCard(props) {
     const { comment } = props;

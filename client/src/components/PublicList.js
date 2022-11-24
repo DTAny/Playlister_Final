@@ -7,7 +7,7 @@ import GlobalStoreContext from '../store';
 import PublicListCard from './PublicListCard';
 
 export default function PublicList(props) {
-    const { tab, index } = props;
+    const { tab, index, searchStr, setSearchStr } = props;
     const { store } = useContext(GlobalStoreContext);
     let isDisplay = tab === index;
     const [anchorEl, setAnchorEl] = useState(null);
@@ -35,6 +35,14 @@ export default function PublicList(props) {
     //         return aTime - bTime;
     //     })
     // }
+    if (searchStr !== null) {
+        if (searchStr !== ""){
+            sortedList = sortedList.filter((list)=>list.name.includes(searchStr));
+        }
+        else {
+            sortedList = [];
+        }
+    }
 
     if (sortMode === 1){
         sortedList = sortedList.sort((a, b)=>{
@@ -63,13 +71,17 @@ export default function PublicList(props) {
             return a.dislikes - b.dislikes;
         })
     }
-    
-    const playlists = sortedList.map((list)=>
-        <PublicListCard 
-            list={list}
-            key={list.pid}
-        />
-    );
+    let playlists = <Box sx={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <Typography variant='h4' sx={{fontFamily: "'Segoe Script'"}}>
+            {'No Playlist Found :('}
+        </Typography>
+    </Box>
+
+    if (sortedList.length > 0){
+        playlists = <List>
+            {sortedList.map((list)=> <PublicListCard list={list} key={list.pid} />)}
+        </List>
+    }
 
     const handleMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -126,7 +138,25 @@ export default function PublicList(props) {
             <MenuItem onClick={handleSortByLikes}>{'Likes (High - Low)'}</MenuItem>
             <MenuItem onClick={handleSortByDislikes}>{'Dislikes (High - Low)'}</MenuItem>
         </Menu>
-    );
+    ); 
+
+    const handleClearSearch = () => {
+        setSearchStr(null);
+    }
+
+    let searchHint = ""
+    if (searchStr !== null){
+        searchHint = (
+            <Box display={'flex'} alignItems='center' justifyContent='center'>
+                <Typography mr='0.5em'>
+                    {`Searching: "${searchStr}"`}
+                </Typography>
+                <Button variant='outlined' onClick={handleClearSearch}>
+                    {'clear'}
+                </Button>
+            </Box>
+        )
+    }
 
     if (isDisplay){
         return (
@@ -134,7 +164,7 @@ export default function PublicList(props) {
                 <Box sx={{height: '100%'}} >
                     <Paper elevation={4} sx={{height: '100%', borderRadius: '50px', padding: '1em 2em 2em 2em'}} >
                         <Grid container>
-                            <Grid item md={12} sx={{flexDirection: 'row'}}>
+                            <Grid item md={12} sx={{display: 'flex', flexDirection: 'row'}}>
                                 <Button size="large"
                                     edge="end"
                                     aria-controls={menuId}
@@ -148,12 +178,12 @@ export default function PublicList(props) {
                                         Sort By {sortText}
                                     </Typography>
                                 </Button>
+                                <Box flex={1} />
+                                {searchHint}
                                 {SortMenu}
                             </Grid>
                             <Grid item md={12} sx={{height: 'calc(100vh - 23em)', overflowY: 'scroll', borderTop: '#A6B0B26E solid 2px', p: '0.5em'}}>
-                                <List>
-                                    {playlists}
-                                </List>
+                                {playlists}
                             </Grid>
                         </Grid>
                     </Paper>

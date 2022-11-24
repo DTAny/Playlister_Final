@@ -10,7 +10,7 @@ import GlobalStoreContext from '../store';
 export default function TopBar(props) {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
-    const {setTab, tab} = props;
+    const {setTab, tab, setSearchStr} = props;
 
     const Search = styled('div')(({ theme }) => ({
         position: 'relative',
@@ -52,6 +52,12 @@ export default function TopBar(props) {
     const handleChange = (event, value) => {
         setTab(value);
     }
+    const handleSearch = (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        let str = formData.get('searchStr');
+        setSearchStr(str);
+    }
 
     return (
         <Box sx={{margin: '1em' }}>
@@ -64,7 +70,7 @@ export default function TopBar(props) {
                       <Tab icon={<PersonSearchIcon />} sx={{color: 'white'}} label="Search User" />
                     </Tabs>
                 </Box>
-                <Box sx={{ flexGrow: 1 }} >
+                <Box sx={{ flexGrow: 1 }} component='form' onSubmit={handleSearch}>
                     <Search>
                         <SearchIconWrapper>
                             <SearchIcon />
@@ -72,6 +78,7 @@ export default function TopBar(props) {
                         <StyledInputBase
                             placeholder="Search…"
                             inputProps={{ 'aria-label': 'search' }}
+                            name='searchStr'
                         />
                     </Search>
                 </Box>

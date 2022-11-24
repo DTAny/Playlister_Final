@@ -11,6 +11,7 @@ import GlobalStoreContext from '../store';
 export default function HomeScreen() {
     const [tab, setTab] = useState(1);
     const { store } = useContext(GlobalStoreContext);
+    const [searchStr, setSearchStr] = useState(null);
 
     useEffect(()=>{
         store.loadListPublished();
@@ -19,10 +20,10 @@ export default function HomeScreen() {
     return (
         <Box sx={{display: 'flex', height: '100%', flexDirection: 'column'}}>
             <CssBaseline/>
-            <TopBar tab={tab} setTab={setTab}/>
+            <TopBar tab={tab} setTab={setTab} setSearchStr={setSearchStr} />
             <Grid container sx={{height: '100%', padding: '0 1.5em', flex: 1, flexGrow: 1}} spacing={5}>
                 <Grid item md={6} sx={{height: '100%'}}>
-                    <PublicList tab={tab} index={1}/>
+                    <PublicList tab={tab} searchStr={searchStr} setSearchStr={setSearchStr} index={1} />
                 </Grid>
                 <Grid item md={6}>
                     <Player/>
