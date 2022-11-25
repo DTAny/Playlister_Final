@@ -77,6 +77,10 @@ function PrivateListCard(props) {
         setIsRenaming(false);
     }
 
+    const handlePublish = () => {
+        store.publishList(list.pid);
+    }
+
     let cardElement =
         <ListItem
             id={list.pid}
@@ -117,7 +121,7 @@ function PrivateListCard(props) {
                     </CardHeader>
                     <CardActions sx={{borderTop: '#A6B0B26E solid 1px'}}>
                         <Box display={isRenaming ? 'none' : 'block'}>
-                            <Button variant='outlined' sx={{display: list.published ? 'none' : ''}} startIcon={
+                            <Button variant='outlined' onClick={handlePublish} sx={{display: list.published ? 'none' : ''}} startIcon={
                                 <PublicRoundedIcon />
                             }>
                                 publish

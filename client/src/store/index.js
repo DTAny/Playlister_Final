@@ -616,6 +616,15 @@ function GlobalStoreContextProvider(props) {
         }
         asyncAddComment(id, content, setComments);
     }
+    store.publishList = (id) => {
+        async function asyncPublishList(id){
+            let response = await api.publishListById(id);
+            if (response.data.success) {
+                store.loadLists();
+            }
+        }
+        asyncPublishList(id);
+    }
 
     return (
         <GlobalStoreContext.Provider value={{

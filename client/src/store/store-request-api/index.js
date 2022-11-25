@@ -52,6 +52,7 @@ export const editLikeById = (id, isLike) => {
     })
 }
 export const incrPlaysById = (id) => api.put(`/playlist/${id}/play`)
+export const publishListById = (id) => api.post(`/playlist/${id}/publish`)
 
 const apis = {
     createPlaylist,
@@ -69,6 +70,7 @@ const apis = {
     deleteLikeById,
     editLikeById,
     incrPlaysById,
+    publishListById
 }
 
 export default apis
