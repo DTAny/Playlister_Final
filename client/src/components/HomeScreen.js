@@ -7,6 +7,7 @@ import Statusbar from './Statusbar';
 import PublicList from './PublicList';
 import Player from './Player';
 import GlobalStoreContext from '../store';
+import UserList from './UserList';
 
 export default function HomeScreen() {
     const [tab, setTab] = useState(1);
@@ -24,6 +25,7 @@ export default function HomeScreen() {
             <Grid container sx={{height: '100%', padding: '0 1.5em', flex: 1, flexGrow: 1}} spacing={5}>
                 <Grid item md={6} sx={{height: '100%'}}>
                     <PublicList tab={tab} searchStr={searchStr} setSearchStr={setSearchStr} index={1} />
+                    <UserList tab={tab} searchStr={searchStr} setSearchStr={setSearchStr} index={2} />
                 </Grid>
                 <Grid item md={6}>
                     <Player/>
