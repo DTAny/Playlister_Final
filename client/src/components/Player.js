@@ -132,13 +132,13 @@ export default function Player() {
                 {commentsPart}
             </Grid>
             <Grid item md={12} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '15%'}}>
-                <Box hidden={tab !== 0} sx={{width: '50%'}}>
+                <Box hidden={tab !== 0 || store.player === null} sx={{width: '50%'}}>
                     <Paper sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                         <IconButton onClick={handlePreviousSong}>
                             <FastRewindRoundedIcon sx={{fontSize: '1.5em'}} />
                         </IconButton>
-                        <IconButton onClick={store.isPlaying ? handlePausePlaying : handleStartPlaying}>
-                            {store.isPlaying ? <PauseRoundedIcon sx={{fontSize: '2em'}} /> :  <PlayArrowRoundedIcon sx={{fontSize: '2em'}} />}
+                        <IconButton onClick={store.player === null || store.player.getPlayerState() === 1 ? handlePausePlaying : handleStartPlaying}>
+                            {store.player === null || store.player.getPlayerState() === 1 ? <PauseRoundedIcon sx={{fontSize: '2em'}} /> :  <PlayArrowRoundedIcon sx={{fontSize: '2em'}} />}
                         </IconButton>
                         <IconButton onClick={handleNextSong}>
                             <FastForwardRoundedIcon sx={{fontSize: '1.5em'}} />
