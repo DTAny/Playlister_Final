@@ -123,6 +123,10 @@ export default function PrivateList(props) {
         )
     }
 
+    const handleNewList = () => {
+        store.createNewList();
+    }
+
     if (isDisplay){
         return (
             <Slide in={true} timeout={400} direction={'right'} unmountOnExit>
@@ -151,7 +155,7 @@ export default function PrivateList(props) {
                                 {playlists}
                             </Grid>
                             <Grid item md={12}>
-                                <Button variant='contained' color={'info'} sx={{width: '100%'}}>
+                                <Button variant='contained' color={'info'} sx={{width: '100%'}} onClick={handleNewList}>
                                     Add new List
                                 </Button>
                             </Grid>

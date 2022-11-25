@@ -75,25 +75,9 @@ function GlobalStoreContextProvider(props) {
                     player: store.player,
                 });
             }
-            case GlobalStoreActionType.CLOSE_CURRENT_LIST: {
-                return setStore({
-                    lists: store.lists,
-                    privateLists: store.privateLists,
-                    currentList: null,
-                    currentSongIndex : -1,
-                    currentSong : null,
-                    status: Status.NONE,
-                    isPlaying: store.isPlaying,
-                    playingSongs: store.playingSongs,
-                    playingSongIndex: store.playingSongIndex,
-                    playingList: store.playingList,
-                    markedList: null,
-                    player: store.player,
-                })
-            }
             case GlobalStoreActionType.CREATE_NEW_LIST: {                
                 return setStore({
-                    lists: null,
+                    lists: store.lists,
                     privateLists: store.privateLists,
                     currentList: payload,
                     currentSongIndex : -1,
@@ -276,11 +260,8 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.closeCurrentList = function () {
-        storeReducer({
-            type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
-            payload: {}
-        });
         tps.clearAllTransactions();
+        store.loadLists();
     }
 
     store.createNewList = async function () {
@@ -293,70 +274,65 @@ function GlobalStoreContextProvider(props) {
             storeReducer({
                 type: GlobalStoreActionType.CREATE_NEW_LIST,
                 payload: newList
-            }
-            );
-            navigate(`/private/${newList.pid}`);
+            });
         }
         else {
             console.log("API FAILED TO CREATE A NEW LIST");
         }
     }
 
-    store.loadLists = () => {
-        async function asyncLoadLists() {
-            let response = await api.getAllPlaylists();
-            if (response.data.success) {
-                let lists = response.data.data;
-                let privateLists = [];
-                try {
-                    response = await api.getUserPlaylists();
-                    if (response.data.success){
-                        privateLists = response.data.data;
-                    }
+    store.loadLists = async () => {
+        let response = await api.getAllPlaylists();
+        if (response.data.success) {
+            let lists = response.data.data;
+            let privateLists = [];
+            try {
+                response = await api.getUserPlaylists();
+                if (response.data.success){
+                    privateLists = response.data.data;
                 }
-                catch (e) {}
-                if (store.playingList !== null){
-                    for (let i = 0; i < store.lists.length; i++){
-                        if (store.lists[i].pid === store.playingList.pid){
-                            let newList = store.lists[i];
-                            let oldList = store.playingList;
-                            if (newList.name !== oldList.name || newList.songsOrder !== oldList.songsOrder){
-                                storeReducer({
-                                    type: GlobalStoreActionType.LOAD_LISTS,
-                                    payload: {
-                                        lists: lists,
-                                        privateLists: privateLists,
-                                        isPlaying: false,
-                                        playingSongIndex: -1,
-                                        playingSongs: [],
-                                        playingList: null,
-                                        player: null,
-                                    }
-                                });
-                                return;
-                            }
-                            break;
+            }
+            catch (e) {}
+            if (store.playingList !== null){
+                for (let i = 0; i < store.lists.length; i++){
+                    if (store.lists[i].pid === store.playingList.pid){
+                        let newList = store.lists[i];
+                        let oldList = store.playingList;
+                        if (newList.name !== oldList.name || newList.songsOrder !== oldList.songsOrder){
+                            storeReducer({
+                                type: GlobalStoreActionType.LOAD_LISTS,
+                                payload: {
+                                    lists: lists,
+                                    privateLists: privateLists,
+                                    isPlaying: false,
+                                    playingSongIndex: -1,
+                                    playingSongs: [],
+                                    playingList: null,
+                                    player: null,
+                                }
+                            });
+                            return;
                         }
+                        break;
                     }
                 }
-                storeReducer({
-                    type: GlobalStoreActionType.LOAD_LISTS,
-                    payload: {
-                        lists: lists,
-                        privateLists: privateLists,
-                        isPlaying: store.isPlaying,
-                        playingSongIndex: store.playingSongIndex,
-                        playingSongs: store.playingSongs,
-                        playingList: store.playingList,
-                        player: store.player,
-                    }
-                });
             }
-            else {
-                console.log("API FAILED TO GET THE LIST PAIRS");
-            }
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_LISTS,
+                payload: {
+                    lists: lists,
+                    privateLists: privateLists,
+                    isPlaying: store.isPlaying,
+                    playingSongIndex: store.playingSongIndex,
+                    playingSongs: store.playingSongs,
+                    playingList: store.playingList,
+                    player: store.player,
+                }
+            });
         }
-        asyncLoadLists();
+        else {
+            console.log("API FAILED TO GET THE LIST PAIRS");
+        }
     }
     store.markListForDeletion = function (id) {
         async function getListToDelete(id) {

@@ -9,6 +9,7 @@ import Player from './Player';
 import GlobalStoreContext from '../store';
 import UserList from './UserList';
 import PrivateList from './PrivateList';
+import ListWorkspace from './ListWorkspace';
 
 export default function HomeScreen() {
     const [tab, setTab] = useState(1);
@@ -25,7 +26,11 @@ export default function HomeScreen() {
             <TopBar tab={tab} setTab={setTab} setSearchStr={setSearchStr} />
             <Grid container sx={{height: '100%', padding: '0 1.5em', flex: 1, flexGrow: 1}} spacing={5}>
                 <Grid item md={6} sx={{height: '100%'}}>
-                    <PrivateList tab={tab} searchStr={searchStr} setSearchStr={setSearchStr} setTab={setTab} index={0} /> 
+                    {
+                        store.currentList ? 
+                        <ListWorkspace tab={tab} index={0} /> : 
+                        <PrivateList tab={tab} searchStr={searchStr} setSearchStr={setSearchStr} index={0} /> 
+                    }
                     <PublicList tab={tab} searchStr={searchStr} setSearchStr={setSearchStr} index={1} />
                     <UserList tab={tab} searchStr={searchStr} setSearchStr={setSearchStr} index={2} />
                 </Grid>
