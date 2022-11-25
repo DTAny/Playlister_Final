@@ -104,35 +104,14 @@ export default function Player() {
 
     if (store.playingSongs.length > 0) {
         playerPart = <YouTubePlayer />
-        controlPanel = <Grid container sx={{height: '100%'}}>
-            <Grid item md={12}>
-                <Tabs value={tab} onChange={handleChange} centered>
-                    <Tab label="Controller" />
+        controlPanel = <Grid container sx={{height: '100%', p: '0.5em'}}>
+            <Grid item md={4} sx={{height: '100%', display: 'flex', flexDirection: 'column', borderRight: '#A6B0B26E solid 2px'}}>
+                <Tabs value={tab} onChange={handleChange} orientation={'vertical'}>
+                    <Tab label="Info" />
                     <Tab label="Comment" />
                 </Tabs>
-            </Grid>
-            <Grid item md={12} sx={{height: 'calc(32vh - 10em)', overflowY: 'scroll', borderTop: '#A6B0B26E solid 2px', borderBottom: '#A6B0B26E solid 2px', p: '0.5em'}}>
-                <Box hidden={tab !== 0} sx={{height: '100%'}}>
-                    <Typography variant='h5' textAlign={'center'} sx={{fontFamily: "'Segoe Script'"}}>
-                        Now Playing
-                    </Typography>
-                    <Typography variant='h5' sx={{fontFamily: "'Segoe Script'"}}>
-                        {`Playlist: ${store.playingList.name}`}
-                    </Typography>
-                    <Typography variant='h5' sx={{fontFamily: "'Segoe Script'"}}>
-                        {`Song #: ${store.playingSongIndex + 1}`}
-                    </Typography>
-                    <Typography variant='h5' sx={{fontFamily: "'Segoe Script'"}}>
-                        {`Title: ${store.playingSongs[store.playingSongIndex].title}`}
-                    </Typography>
-                    <Typography variant='h5' sx={{fontFamily: "'Segoe Script'"}}>
-                        {`Artist: ${store.playingSongs[store.playingSongIndex].artist}`}
-                    </Typography>
-                </Box>
-                {commentsPart}
-            </Grid>
-            <Grid item md={12} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '15%'}}>
-                <Box hidden={tab !== 0 || store.player === null} sx={{width: '50%'}}>
+                <Box flex={1} /> 
+                <Box hidden={store.player === null} sx={{width: '100%', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                     <Paper sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                         <IconButton onClick={handlePreviousSong}>
                             <FastRewindRoundedIcon sx={{fontSize: '1.5em'}} />
@@ -144,6 +123,28 @@ export default function Player() {
                             <FastForwardRoundedIcon sx={{fontSize: '1.5em'}} />
                         </IconButton>
                     </Paper>
+                </Box>
+            </Grid>
+            <Grid item md={8}>
+                <Box sx={{height: 'calc(38vh - 8em)', overflowY: 'scroll'}}>
+                    <Box hidden={tab !== 0} sx={{height: '100%', pl: '1em'}}>
+                        <Typography variant='h5' textAlign={'center'} sx={{fontFamily: "'Segoe Script'"}}>
+                            Now Playing
+                        </Typography>
+                        <Typography variant='h5' sx={{fontFamily: "'Segoe Script'"}}>
+                            {`Playlist: ${store.playingList.name}`}
+                        </Typography>
+                        <Typography variant='h5' sx={{fontFamily: "'Segoe Script'"}}>
+                            {`Song #: ${store.playingSongIndex + 1}`}
+                        </Typography>
+                        <Typography variant='h5' sx={{fontFamily: "'Segoe Script'"}}>
+                            {`Title: ${store.playingSongs[store.playingSongIndex].title}`}
+                        </Typography>
+                        <Typography variant='h5' sx={{fontFamily: "'Segoe Script'"}}>
+                            {`Artist: ${store.playingSongs[store.playingSongIndex].artist}`}
+                        </Typography>
+                    </Box>
+                    {commentsPart}
                 </Box>
                 <Box component={'form'} hidden={tab !== 1} sx={{width: '100%'}} onSubmit={handleSubmit}>
                     <CommentInput>
