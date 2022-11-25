@@ -4,7 +4,7 @@ import { Box, AppBar, Toolbar, Slide, Typography} from '@mui/material'
 
 function Statusbar() {
     const { store } = useContext(GlobalStoreContext);
-    let text ="123";
+    let text ="";
     if (store.currentList)
         text = store.currentList.name;
     return (

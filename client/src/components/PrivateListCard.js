@@ -21,7 +21,7 @@ import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
 function PrivateListCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
-    const { list } = props;
+    const { list, setIsOpening } = props;
     const [isRenaming, setIsRenaming] = useState(false);
     const [plays, setPlays] = useState(0);
     const [name, setName] = useState("");
@@ -45,7 +45,10 @@ function PrivateListCard(props) {
     }
 
     const handleClick = () => {
-        // alert(JSON.stringify(list));
+        setIsOpening(true);
+        setTimeout(()=>{
+            store.openList(list);
+        },400)
     };
 
     const handleDoubleClick = () => {
@@ -59,7 +62,7 @@ function PrivateListCard(props) {
         onSingleClick: handleClick,
         onDoubleClick: handleDoubleClick,
         ref: buttonRef,
-        latency: 250
+        latency: 200
     })
 
     const handleChangeRename = (event) => {

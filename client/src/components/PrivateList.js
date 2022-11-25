@@ -12,8 +12,9 @@ export default function PrivateList(props) {
     let isDisplay = tab === index;
     const [anchorEl, setAnchorEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
-    const [sortMode, setSortMode] = useState(1);
-    const [sortText, setSortText] = useState('Name (A-Z)');
+    const [sortMode, setSortMode] = useState(2);
+    const [sortText, setSortText] = useState('Last Edit Date (New-Old)');
+    const [isOpening, setIsOpening] = useState(false);
 
     let sortedList = store.privateLists;
     if (searchStr !== null) {
@@ -52,7 +53,7 @@ export default function PrivateList(props) {
 
     if (sortedList.length > 0){
         playlists = <List>
-            {sortedList.map((list)=> <PrivateListCard list={list} key={list.pid} />)}
+            {sortedList.map((list)=> <PrivateListCard list={list} setIsOpening={setIsOpening} key={list.pid} />)}
         </List>
     }
 
@@ -129,7 +130,7 @@ export default function PrivateList(props) {
 
     if (isDisplay){
         return (
-            <Slide in={true} timeout={400} direction={'right'} unmountOnExit>
+            <Slide in={!isOpening} timeout={400} direction={'right'} unmountOnExit>
                 <Box sx={{height: '100%'}} >
                     <Paper elevation={4} sx={{height: '100%', borderRadius: '50px', padding: '1em 2em 2em 2em'}} >
                         <Grid container>

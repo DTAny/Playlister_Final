@@ -13,7 +13,7 @@ console.log("create GlobalStoreContext");
 
 export const GlobalStoreActionType = {
     CHANGE_LIST_NAME: "CHANGE_LIST_NAME",
-    CLOSE_CURRENT_LIST: "CLOSE_CURRENT_LIST",
+    OPEN_LIST: "OPEN_LIST",
     CREATE_NEW_LIST: "CREATE_NEW_LIST",
     LOAD_LISTS: "LOAD_LISTS",
     MARK_LIST_FOR_DELETION: "MARK_LIST_FOR_DELETION",
@@ -74,6 +74,22 @@ function GlobalStoreContextProvider(props) {
                     markedList: null,
                     player: store.player,
                 });
+            }
+            case GlobalStoreActionType.OPEN_LIST: {
+                return setStore({
+                    lists: store.lists,
+                    privateLists: store.privateLists,
+                    currentList: payload,
+                    currentSongIndex : -1,
+                    currentSong : null,
+                    status: Status.NONE,
+                    isPlaying: store.isPlaying,
+                    playingSongs: store.playingSongs,
+                    playingSongIndex: store.playingSongIndex,
+                    playingList: store.playingList,
+                    markedList: null,
+                    player: store.player,
+                })
             }
             case GlobalStoreActionType.CREATE_NEW_LIST: {                
                 return setStore({
@@ -249,7 +265,7 @@ function GlobalStoreContextProvider(props) {
                 response = await api.updatePlaylistById(id, playlist);
                 if (response.data.success) {
                     setIsRenaming(false);
-                    store.loadLists();
+                    store.loadLists(true);
                 }
                 else{
                     setErrMsg(response.data.description);
@@ -281,7 +297,7 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    store.loadLists = async () => {
+    store.loadLists = async (isChange = false) => {
         let response = await api.getAllPlaylists();
         if (response.data.success) {
             let lists = response.data.data;
@@ -293,7 +309,7 @@ function GlobalStoreContextProvider(props) {
                 }
             }
             catch (e) {}
-            if (store.playingList !== null){
+            if (isChange && store.playingList !== null){
                 for (let i = 0; i < store.lists.length; i++){
                     if (store.lists[i].pid === store.playingList.pid){
                         let newList = store.lists[i];
@@ -334,6 +350,13 @@ function GlobalStoreContextProvider(props) {
             console.log("API FAILED TO GET THE LIST PAIRS");
         }
     }
+    store.openList = (list) => {
+        storeReducer({
+            type: GlobalStoreActionType.OPEN_LIST,
+            payload: list
+        });
+    }
+
     store.markListForDeletion = function (id) {
         async function getListToDelete(id) {
             let response = await api.getPlaylistById(id);
