@@ -138,8 +138,8 @@ getPlaylistById = async (req, res) => {
     return res.status(200).json({ success: true, playlist: playlist })
 }
 
-getAllPlaylistsPublished = async (req, res) => {
-    let playlists = await Playlist.findAll({where: {published: true}, include: [Song, Comment, Like ],});
+getAllPlaylists = async (req, res) => {
+    let playlists = await Playlist.findAll({include: [Song, Comment, Like ],});
     return res.status(200).json({ success: true, data: playlists })
 }
 
@@ -151,7 +151,6 @@ getUserPlaylists = async (req, res) => {
 updatePlaylist = async (req, res) => {
     const body = req.body
     console.log("updatePlaylist: " + JSON.stringify(body));
-    console.log("req.body.name: " + req.body.name);
 
     if (!body) {
         return res.status(400).json({
@@ -162,22 +161,24 @@ updatePlaylist = async (req, res) => {
 
     let playlist = await Playlist.findByPk(req.params.id, {include: Song});
     if (!playlist) {
-        return res.status(404).json({
+        return res.status(200).json({
             message: 'Playlist not found!',
         });
     }
     if (playlist.UserUid != req.userId){
         console.log("incorrect user!");
-        return res.status(400).json({ success: false, description: "authentication error" });
+        return res.status(200).json({ success: false, description: "authentication error" });
     }
     if (playlist.published){
         console.log("Playlist already published.");
-        return res.status(400).json({ success: false, description: "Playlist already published."});
+        return res.status(200).json({ success: false, description: "Playlist already published."});
     }
-    let existPlaylist = await Playlist.findOne({where: {UserUid: playlist.UserUid, name: body.name}});
+    let existPlaylist = await Playlist.findOne({where: {UserUid: playlist.UserUid, name: body.playlist.name}});
     if (existPlaylist) {
-        console.log("Playlist name duplicated.");
-        return res.status(400).json({ success: false, description: "Playlist name duplicated."});
+        if (existPlaylist.pid !== body.playlist.pid){
+            console.log("Playlist name duplicated.");
+            return res.status(200).json({ success: false, description: "Playlist name duplicated."});
+        }
     }
     playlist.name = body.playlist.name;
     playlist.songsOrder = body.playlist.songsOrder;
@@ -524,7 +525,7 @@ module.exports = {
     forkPlaylist,
     deletePlaylist,
     getPlaylistById,
-    getAllPlaylistsPublished,
+    getAllPlaylists,
     getUserPlaylists,
     updatePlaylist,
     addSong,

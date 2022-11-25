@@ -15,8 +15,7 @@ export const GlobalStoreActionType = {
     CHANGE_LIST_NAME: "CHANGE_LIST_NAME",
     CLOSE_CURRENT_LIST: "CLOSE_CURRENT_LIST",
     CREATE_NEW_LIST: "CREATE_NEW_LIST",
-    LOAD_LIST_PUBLISHED: "LOAD_LIST_PUBLISHED",
-    LOAD_LIST_PRIVATE: "LOAD_LIST_PRIVATE",
+    LOAD_LISTS: "LOAD_LISTS",
     MARK_LIST_FOR_DELETION: "MARK_LIST_FOR_DELETION",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
@@ -41,6 +40,7 @@ const Status = {
 function GlobalStoreContextProvider(props) {
     const [store, setStore] = useState({
         lists: [],
+        privateLists: [],
         currentList: null,
         currentSongIndex : -1,
         currentSong : null,
@@ -54,17 +54,15 @@ function GlobalStoreContextProvider(props) {
     });
     const navigate = useNavigate();
 
-    console.log("inside useGlobalStore");
-
     const { auth } = useContext(AuthContext);
-    console.log("auth: " + auth);
 
     const storeReducer = (action) => {
         const { type, payload } = action;
         switch (type) {
             case GlobalStoreActionType.CHANGE_LIST_NAME: {
                 return setStore({
-                    lists: payload,
+                    lists: store.lists,
+                    privateLists: store.privateLists,
                     currentList: null,
                     currentSongIndex : -1,
                     currentSong : null,
@@ -80,6 +78,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.CLOSE_CURRENT_LIST: {
                 return setStore({
                     lists: store.lists,
+                    privateLists: store.privateLists,
                     currentList: null,
                     currentSongIndex : -1,
                     currentSong : null,
@@ -95,6 +94,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.CREATE_NEW_LIST: {                
                 return setStore({
                     lists: null,
+                    privateLists: store.privateLists,
                     currentList: payload,
                     currentSongIndex : -1,
                     currentSong : null,
@@ -107,39 +107,26 @@ function GlobalStoreContextProvider(props) {
                     player: store.player,
                 })
             }
-            case GlobalStoreActionType.LOAD_LIST_PUBLISHED: {
+            case GlobalStoreActionType.LOAD_LISTS: {
                 return setStore({
-                    lists: payload,
+                    lists: payload.lists,
+                    privateLists: payload.privateLists,
                     currentList: null,
                     currentSongIndex : -1,
                     currentSong : null,
                     status: Status.NONE,
-                    isPlaying: store.isPlaying,
-                    playingSongs: store.playingSongs,
-                    playingSongIndex: store.playingSongIndex,
-                    playingList: store.playingList,
+                    isPlaying: payload.isPlaying,
+                    playingSongs: payload.playingSongs,
+                    playingSongIndex: payload.playingSongIndex,
+                    playingList: payload.playingList,
                     markedList: null,
-                    player: store.player,
-                });
-            }
-            case GlobalStoreActionType.LOAD_LIST_PRIVATE: {
-                return setStore({
-                    lists: payload,
-                    currentList: null,
-                    currentSongIndex : -1,
-                    currentSong : null,
-                    status: Status.NONE,
-                    isPlaying: store.isPlaying,
-                    playingSongs: store.playingSongs,
-                    playingSongIndex: store.playingSongIndex,
-                    playingList: store.playingList,
-                    markedList: null,
-                    player: store.player,
+                    player: payload.player,
                 });
             }
             case GlobalStoreActionType.MARK_LIST_FOR_DELETION: {
                 return setStore({
                     lists: store.lists,
+                    privateLists: store.privateLists,
                     currentList: null,
                     currentSongIndex : -1,
                     currentSong : null,
@@ -155,6 +142,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.SET_CURRENT_LIST: {
                 return setStore({
                     lists: store.lists,
+                    privateLists: store.privateLists,
                     currentList: payload,
                     currentSongIndex : -1,
                     currentSong : null,
@@ -170,6 +158,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.EDIT_SONG: {
                 return setStore({
                     lists: store.lists,
+                    privateLists: store.privateLists,
                     currentList: store.currentList,
                     currentSongIndex : payload.currentSongIndex,
                     currentSong : payload.currentSong,
@@ -185,6 +174,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.REMOVE_SONG: {
                 return setStore({
                     lists: store.lists,
+                    privateLists: store.privateLists,
                     currentList: store.currentList,
                     currentSongIndex : payload.currentSongIndex,
                     currentSong : payload.currentSong,
@@ -200,6 +190,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.HIDE_MODALS: {
                 return setStore({
                     lists: store.lists,
+                    privateLists: store.privateLists,
                     currentList: store.currentList,
                     currentSongIndex : -1,
                     currentSong : null,
@@ -215,6 +206,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.START_PLAYING: {
                 return setStore({
                     lists: store.lists,
+                    privateLists: store.privateLists,
                     currentList: store.currentList,
                     currentSongIndex : -1,
                     currentSong : null,
@@ -230,6 +222,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.PAUSE_PLAYING: {
                 return setStore({
                     lists: store.lists,
+                    privateLists: store.privateLists,
                     currentList: store.currentList,
                     currentSongIndex : -1,
                     currentSong : null,
@@ -245,6 +238,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.PLAYER_READY: {
                 return setStore({
                     lists: store.lists,
+                    privateLists: store.privateLists,
                     currentList: store.currentList,
                     currentSongIndex : -1,
                     currentSong : null,
@@ -262,33 +256,23 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    store.changeListName = function (id, newName) {
-        async function asyncChangeListName(id) {
+    store.changeListName = function (id, newName, setErrMsg, setIsRenaming) {
+        async function asyncChangeListName(id, newName) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
                 let playlist = response.data.playlist;
                 playlist.name = newName;
-                async function updateList(playlist) {
-                    response = await api.updatePlaylistById(id, playlist);
-                    if (response.data.success) {
-                        async function getList() {
-                            response = await api.getUserPlaylists();
-                            if (response.data.success) {
-                                storeReducer({
-                                    type: GlobalStoreActionType.CHANGE_LIST_NAME,
-                                    payload: {
-                                        lists: response.data,
-                                    }
-                                });
-                            }
-                        }
-                        getList();
-                    }
+                response = await api.updatePlaylistById(id, playlist);
+                if (response.data.success) {
+                    setIsRenaming(false);
+                    store.loadLists();
                 }
-                updateList(playlist);
+                else{
+                    setErrMsg(response.data.description);
+                }
             }
         }
-        asyncChangeListName(id);
+        asyncChangeListName(id, newName);
     }
 
     store.closeCurrentList = function () {
@@ -318,37 +302,61 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    store.loadListPublished = async () => {
-        async function asyncLoadListPublished() {
-            const response = await api.getAllPlaylistsPublished();
+    store.loadLists = () => {
+        async function asyncLoadLists() {
+            let response = await api.getAllPlaylists();
             if (response.data.success) {
-                console.log("Published List: ", JSON.stringify(response.data));
+                let lists = response.data.data;
+                let privateLists = [];
+                try {
+                    response = await api.getUserPlaylists();
+                    if (response.data.success){
+                        privateLists = response.data.data;
+                    }
+                }
+                catch (e) {}
+                if (store.playingList !== null){
+                    for (let i = 0; i < store.lists.length; i++){
+                        if (store.lists[i].pid === store.playingList.pid){
+                            let newList = store.lists[i];
+                            let oldList = store.playingList;
+                            if (newList.name !== oldList.name || newList.songsOrder !== oldList.songsOrder){
+                                storeReducer({
+                                    type: GlobalStoreActionType.LOAD_LISTS,
+                                    payload: {
+                                        lists: lists,
+                                        privateLists: privateLists,
+                                        isPlaying: false,
+                                        playingSongIndex: -1,
+                                        playingSongs: [],
+                                        playingList: null,
+                                        player: null,
+                                    }
+                                });
+                                return;
+                            }
+                            break;
+                        }
+                    }
+                }
                 storeReducer({
-                    type: GlobalStoreActionType.LOAD_LIST_PUBLISHED,
-                    payload: response.data.data
+                    type: GlobalStoreActionType.LOAD_LISTS,
+                    payload: {
+                        lists: lists,
+                        privateLists: privateLists,
+                        isPlaying: store.isPlaying,
+                        playingSongIndex: store.playingSongIndex,
+                        playingSongs: store.playingSongs,
+                        playingList: store.playingList,
+                        player: store.player,
+                    }
                 });
             }
             else {
                 console.log("API FAILED TO GET THE LIST PAIRS");
             }
         }
-        asyncLoadListPublished();
-    }
-
-    store.loadListPrivate = function () {
-        async function asyncLoadListPrivate() {
-            const response = await api.getUserPlaylists();
-            if (response.data.success) {
-                storeReducer({
-                    type: GlobalStoreActionType.LOAD_LIST_PRIVATE,
-                    payload: response.data.data
-                });
-            }
-            else {
-                console.log("API FAILED TO GET THE LIST PAIRS");
-            }
-        }
-        asyncLoadListPrivate();
+        asyncLoadLists();
     }
     store.markListForDeletion = function (id) {
         async function getListToDelete(id) {
@@ -557,7 +565,7 @@ function GlobalStoreContextProvider(props) {
     }
     store.startPlaying = (index, songs, list, plays = null, setPlays = null) => {
         async function asyncStartPlaying(){
-            if (store.playingList === null || list.pid !== store.playingList.pid){
+            if ((store.playingList === null || list.pid !== store.playingList.pid) && list.published){
                 let response = await api.incrPlaysById(list.pid);
                 if (response.data.success){
                     if (plays !== null && setPlays !== null) setPlays(plays + 1);

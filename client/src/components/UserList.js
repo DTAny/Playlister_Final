@@ -15,26 +15,7 @@ export default function UserList(props) {
     const [sortMode, setSortMode] = useState(1);
     const [sortText, setSortText] = useState('Name (A-Z)');
 
-    let sortedList = store.lists;
-    // if (sortMode === 1){
-    //     sortedList = sortedList.sort((a, b)=>{
-    //         return a.name.localeCompare(b.name);
-    //     });
-    // }
-    // else if (sortMode === 2){
-    //     sortedList = sortedList.sort((a, b)=>{
-    //         let aTime = Date.parse(a.updatedAt);
-    //         let bTime = Date.parse(b.updatedAt);
-    //         return bTime - aTime;
-    //     })
-    // }
-    // else if (sortMode === 3){
-    //     sortedList = sortedList.sort((a, b)=>{
-    //         let aTime = Date.parse(a.createdAt);
-    //         let bTime = Date.parse(b.createdAt);
-    //         return aTime - bTime;
-    //     })
-    // }
+    let sortedList = store.lists.filter((list)=>list.published);
     if (searchStr !== null) {
         if (searchStr !== ""){
             sortedList = sortedList.filter((list)=>list.ownerUsername.includes(searchStr));
@@ -101,17 +82,17 @@ export default function UserList(props) {
     }
     const handleSortByListens = ()=>{
         setSortMode(3);
-        setSortText('Listens (High - Low)')
+        setSortText('Listens (High-Low)')
         handleMenuClose();
     }
     const handleSortByLikes = ()=>{
         setSortMode(4);
-        setSortText('Likes (High - Low)')
+        setSortText('Likes (High-Low)')
         handleMenuClose(); 
     }
     const handleSortByDislikes = ()=>{
         setSortMode(5);
-        setSortText('Dislikes (High - Low)')
+        setSortText('Dislikes (High-Low)')
         handleMenuClose();
     }
     const menuId = 'sort-menu'
@@ -134,9 +115,9 @@ export default function UserList(props) {
         >
             <MenuItem onClick={handleSortByName}>{'Name (A-Z)'}</MenuItem>
             <MenuItem onClick={handleSortByPublishedDate}>{'Published Date (Newest)'}</MenuItem>
-            <MenuItem onClick={handleSortByListens}>{'Listens (High - Low)'}</MenuItem>
-            <MenuItem onClick={handleSortByLikes}>{'Likes (High - Low)'}</MenuItem>
-            <MenuItem onClick={handleSortByDislikes}>{'Dislikes (High - Low)'}</MenuItem>
+            <MenuItem onClick={handleSortByListens}>{'Listens (High-Low)'}</MenuItem>
+            <MenuItem onClick={handleSortByLikes}>{'Likes (High-Low)'}</MenuItem>
+            <MenuItem onClick={handleSortByDislikes}>{'Dislikes (High-Low)'}</MenuItem>
         </Menu>
     ); 
 
@@ -144,7 +125,11 @@ export default function UserList(props) {
         setSearchStr(null);
     }
 
-    let searchHint = ""
+    let searchHint = (
+        <Typography flex={1} sx={{fontFamily: "'Segoe Script'", display: 'flex', alignItems: 'center', fontSize: '1.2em'}}>
+            User Search
+        </Typography>
+    )
     if (searchStr !== null){
         searchHint = (
             <Box display={'flex'} alignItems='center' justifyContent='center'>
@@ -165,6 +150,8 @@ export default function UserList(props) {
                     <Paper elevation={4} sx={{height: '100%', borderRadius: '50px', padding: '1em 2em 2em 2em'}} >
                         <Grid container>
                             <Grid item md={12} sx={{display: 'flex', flexDirection: 'row'}}>
+                                {searchHint}
+                                <Box flex={1} />
                                 <Button size="large"
                                     edge="end"
                                     aria-controls={menuId}
@@ -178,8 +165,6 @@ export default function UserList(props) {
                                         Sort By {sortText}
                                     </Typography>
                                 </Button>
-                                <Box flex={1} />
-                                {searchHint}
                                 {SortMenu}
                             </Grid>
                             <Grid item md={12} sx={{height: 'calc(100vh - 23em)', overflowY: 'scroll', borderTop: '#A6B0B26E solid 2px', p: '0.5em'}}>

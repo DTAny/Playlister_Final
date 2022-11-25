@@ -11,9 +11,9 @@ export const createPlaylist = (newListName) => {
 }
 export const forkPlaylist = (id) => api.post(`/playlist/${id}`)
 export const deletePlaylistById = (id) => api.delete(`/playlist/${id}`)
-export const getAllPlaylistsPublished = () => api.get(`/playlist/public`)
+export const getAllPlaylists = () => api.get(`/playlist`)
+export const getUserPlaylists = () => api.get(`/playlist/user`)
 export const getPlaylistById = (id) => api.get(`/playlist/${id}`)
-export const getUserPlaylists = () => api.get(`/playlist`)
 export const updatePlaylistById = (id, playlist) => {
     return api.put(`/playlist/${id}`, {
         playlist : playlist
@@ -57,7 +57,7 @@ const apis = {
     createPlaylist,
     deletePlaylistById,
     getPlaylistById,
-    getAllPlaylistsPublished,
+    getAllPlaylists,
     getUserPlaylists,
     updatePlaylistById,
     addSongById,
