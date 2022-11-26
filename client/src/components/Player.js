@@ -108,7 +108,7 @@ export default function Player() {
             <Grid item md={4} sx={{height: '100%', display: 'flex', flexDirection: 'column', borderRight: '#A6B0B26E solid 2px'}}>
                 <Tabs value={tab} onChange={handleChange} orientation={'vertical'}>
                     <Tab label="Info" />
-                    <Tab label="Comment" />
+                    <Tab label="Comment" sx={{display: store.playingList.published ? '' : 'none'}} />
                 </Tabs>
                 <Box flex={1} /> 
                 <Box hidden={store.player === null} sx={{width: '100%', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
