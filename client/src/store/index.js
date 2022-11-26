@@ -206,7 +206,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.START_PLAYING: {
                 return setStore({
                     lists: payload.lists,
-                    privateLists: store.privateLists,
+                    privateLists: payload.privateLists,
                     currentList: store.currentList,
                     currentSongIndex : -1,
                     currentSong : null,
@@ -567,12 +567,14 @@ function GlobalStoreContextProvider(props) {
             if ((store.playingList === null || list.pid !== store.playingList.pid) && list.published){
                 let response = await api.incrPlaysById(list.pid);
                 if (response.data.success){
-                    response = await api.getAllPlaylists();
-                    if (response.data.success){
+                    let response1 = await api.getAllPlaylists();
+                    let response2 = await api.getUserPlaylists();
+                    if (response1.data.success && response2.data.success){
                         storeReducer({
                             type: GlobalStoreActionType.START_PLAYING,
                             payload: {
-                                lists: response.data.data,
+                                lists: response1.data.data,
+                                privateLists: response2.data.data,
                                 playingSongIndex: index,
                                 playingSongs: songs,
                                 playingList: list
@@ -586,6 +588,7 @@ function GlobalStoreContextProvider(props) {
                     type: GlobalStoreActionType.START_PLAYING,
                     payload: {
                         lists: store.lists,
+                        privateLists: store.privateLists,
                         playingSongIndex: index,
                         playingSongs: songs,
                         playingList: list
