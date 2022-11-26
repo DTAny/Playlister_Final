@@ -79,16 +79,16 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     lists: store.lists,
                     privateLists: store.privateLists,
-                    currentList: payload,
+                    currentList: payload.currentList,
                     currentSongIndex : -1,
                     currentSong : null,
                     status: Status.NONE,
-                    isPlaying: store.isPlaying,
-                    playingSongs: store.playingSongs,
-                    playingSongIndex: store.playingSongIndex,
-                    playingList: store.playingList,
+                    isPlaying: payload.isPlaying,
+                    playingSongs: payload.playingSongs,
+                    playingSongIndex: payload.playingSongIndex,
+                    playingList: payload.playingList,
                     markedList: null,
-                    player: store.player,
+                    player: payload.player,
                 })
             }
             case GlobalStoreActionType.CREATE_NEW_LIST: {                
@@ -350,10 +350,40 @@ function GlobalStoreContextProvider(props) {
             console.log("API FAILED TO GET THE LIST PAIRS");
         }
     }
-    store.openList = (list) => {
+    store.openList = (list, isChange = false) => {
+        if (isChange && store.playingList !== null){
+            for (let i = 0; i < store.lists.length; i++){
+                if (store.lists[i].pid === store.playingList.pid){
+                    let newList = store.lists[i];
+                    let oldList = store.playingList;
+                    if (newList.name !== oldList.name || newList.songsOrder !== oldList.songsOrder){
+                        storeReducer({
+                            type: GlobalStoreActionType.OPEN_LIST,
+                            payload: {
+                                currentList: list,
+                                isPlaying: false,
+                                playingSongIndex: -1,
+                                playingSongs: [],
+                                playingList: null,
+                                player: null,
+                            }
+                        });
+                        return;
+                    }
+                    break;
+                }
+            }
+        }
         storeReducer({
             type: GlobalStoreActionType.OPEN_LIST,
-            payload: list
+            payload: {
+                currentList: list,
+                isPlaying: store.isPlaying,
+                playingSongIndex: store.playingSongIndex,
+                playingSongs: store.playingSongs,
+                playingList: store.playingList,
+                player: store.player,
+            }
         });
     }
 
@@ -428,16 +458,16 @@ function GlobalStoreContextProvider(props) {
     store.getPlaylistSize = function() {
         return store.currentList.Songs.length;
     }
-    store.addNewSong = function() {
-        let index = this.getPlaylistSize();
-        this.addCreateSongTransaction(index, "Untitled", "?", "dQw4w9WgXcQ");
+    store.createSong = async (index, song) => {
+        let response = await api.addSongById(store.currentList.pid, index, song.title, song.artist, song.youtubeId);
+        if (response.data.success){
+            response = await api.getPlaylistById(store.currentList.pid);
+            if (response.data.success){
+                store.openList(response.data.playlist, true);
+            }
+        }
     }
-    store.createSong = function(index, song) {
-        let list = store.currentList;
-        list.Songs.splice(index, 0, song);
-        store.updateCurrentList();
-    }
-    store.moveSong = function(start, end) {
+    store.moveSong = async (start, end) => {
         let list = store.currentList;
 
         if (start < end) {
@@ -454,14 +484,19 @@ function GlobalStoreContextProvider(props) {
             }
             list.songsOrder[end] = temp;
         }
-
-        store.updateCurrentList();
+        const response = await api.updatePlaylistById(store.currentList.pid, store.currentList);
+        if (response.data.success){
+            store.openList(response.data.playlist, true);
+        }
     }
-    store.removeSong = function(index) {
-        let list = store.currentList;      
-        list.Songs.splice(index, 1); 
-
-        store.updateCurrentList();
+    store.removeSong = async (index) => {     
+        let response = await api.deleteSongById(store.currentList.pid, index);
+        if (response.data.success){
+            response = await api.getPlaylistById(store.currentList.pid);
+            if (response.data.success){
+                store.openList(response.data.playlist, true);
+            }
+        }
     }
     store.updateSong = function(index, songData) {
         async function asyncUpdateCurrentList(index, songData){
@@ -477,14 +512,13 @@ function GlobalStoreContextProvider(props) {
     }
     store.addNewSong = () => {
         let playlistSize = store.getPlaylistSize();
-        store.addCreateSongTransaction(
-            playlistSize, "Untitled", "?", "dQw4w9WgXcQ");
+        store.addCreateSongTransaction(playlistSize, "Untitled", "?", "OdFPsSHau_Q");
     }
     store.addCreateSongTransaction = (index, title, artist, youTubeId) => {
         let song = {
             title: title,
             artist: artist,
-            youTubeId: youTubeId
+            youtubeId: youTubeId
         };
         let transaction = new CreateSong_Transaction(store, index, song);
         tps.addTransaction(transaction);
@@ -502,18 +536,6 @@ function GlobalStoreContextProvider(props) {
     store.addUpdateSongTransaction = function (index, newSongData, oldSongData) {
         let transaction = new UpdateSong_Transaction(this, index, oldSongData, newSongData);        
         tps.addTransaction(transaction);
-    }
-    store.updateCurrentList = function() {
-        async function asyncUpdateCurrentList() {
-            const response = await api.updatePlaylistById(store.currentList.pid, store.currentList);
-            if (response.data.success) {
-                storeReducer({
-                    type: GlobalStoreActionType.SET_CURRENT_LIST,
-                    payload: store.currentList
-                });
-            }
-        }
-        asyncUpdateCurrentList();
     }
     store.undo = function () {
         tps.undoTransaction();

@@ -226,7 +226,7 @@ addSong = async (req, res) => {
         youtubeId: body.youtubeId
     })
     let tmp = playlist.songsOrder;
-    tmp.splice(body.index, 0, song.sid);
+    tmp.splice(req.params.index, 0, song.sid);
     playlist.songsOrder = tmp;
     playlist.editedAt = Date.now();
     console.log(JSON.stringify(playlist));

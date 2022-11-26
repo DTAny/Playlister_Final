@@ -31,6 +31,10 @@ export default function ListWorkspace(props) {
         store.redo();
     }
 
+    const handleNewSong = () => {
+        store.addNewSong();
+    }
+
     let listPart = (
         <Box sx={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <Typography textAlign={'center'} sx={{fontFamily: "'Segoe Script'", fontSize: '2em'}}>
@@ -89,7 +93,7 @@ export default function ListWorkspace(props) {
                                     {listPart}
                                 </Grid>
                                 <Grid item md={12}>
-                                    <Button fullWidth variant='contained' color={'info'} sx={{display: list.published ? 'none' : ''}}>
+                                    <Button fullWidth variant='contained' color={'info'} sx={{display: list.published ? 'none' : ''}} onClick={handleNewSong}>
                                         Add new song
                                     </Button>
                                 </Grid>
@@ -97,7 +101,9 @@ export default function ListWorkspace(props) {
                         </Paper>
                     </Box>
                 </Slide>
-                {song === null ? "" : <MUIEditSongModal song={song} />}
+                {song === null ? "" : (
+                    <MUIEditSongModal song={song} />
+                )}
             </Box>
         );
     }

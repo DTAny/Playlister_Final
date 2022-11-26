@@ -19,8 +19,8 @@ export const updatePlaylistById = (id, playlist) => {
         playlist : playlist
     })
 }
-export const addSongById = (id, title, artist, youtubeId) => {
-    return api.post(`/playlist/${id}/song`, {
+export const addSongById = (id, index, title, artist, youtubeId) => {
+    return api.post(`/playlist/${id}/song/${index}`, {
         title: title,
         artist: artist,
         youtubeId: youtubeId

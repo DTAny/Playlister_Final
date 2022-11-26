@@ -11,7 +11,7 @@ router.get('/playlist/user', auth.verify, PlaylistController.getUserPlaylists)
 router.get('/playlist/:id', PlaylistController.getPlaylistById)
 router.put('/playlist/:id', auth.verify, PlaylistController.updatePlaylist)
 
-router.post('/playlist/:id/song', auth.verify, PlaylistController.addSong)
+router.post('/playlist/:id/song/:index', auth.verify, PlaylistController.addSong)
 router.delete('/playlist/:id/song/:index', auth.verify, PlaylistController.deleteSong)
 router.put('/playlist/:id/song/:index', auth.verify, PlaylistController.editSong)
 
