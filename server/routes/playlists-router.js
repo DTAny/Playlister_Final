@@ -4,7 +4,7 @@ const auth = require('../auth')
 const router = express.Router()
 
 router.post('/playlist', auth.verify, PlaylistController.createPlaylist)
-router.post('/playlist/:id', auth.verify, PlaylistController.forkPlaylist)
+router.post('/playlist/:id', auth.verify, PlaylistController.duplicatePlaylist)
 router.delete('/playlist/:id', auth.verify, PlaylistController.deletePlaylist)
 router.get('/playlist', PlaylistController.getAllPlaylists)
 router.get('/playlist/user', auth.verify, PlaylistController.getUserPlaylists)

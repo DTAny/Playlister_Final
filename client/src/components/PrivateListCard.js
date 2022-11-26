@@ -3,13 +3,10 @@ import { GlobalStoreContext } from '../store'
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
-import { Button, Card, CardActionArea, CardActions, CardContent, CardHeader, Collapse, Divider, List, TextField, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Button, Card, CardActionArea, CardActions, CardHeader, TextField, Typography } from '@mui/material';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import ThumbUpRoundedIcon from '@mui/icons-material/ThumbUpRounded';
 import ThumbDownRoundedIcon from '@mui/icons-material/ThumbDownRounded';
-import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
-import PublicSongCard from './PublicSongCard';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
 import AuthContext from '../auth';
 import useDoubleClick from 'use-double-click';
@@ -17,6 +14,7 @@ import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
+import TaskAltRoundedIcon from '@mui/icons-material/TaskAltRounded';
 
 function PrivateListCard(props) {
     const { store } = useContext(GlobalStoreContext);
@@ -26,7 +24,14 @@ function PrivateListCard(props) {
     const [plays, setPlays] = useState(0);
     const [name, setName] = useState("");
     const [errMsg, setErrMsg] = useState("");
+    const [isNotifying, setIsNotifying] = useState(false);
     const buttonRef = useRef();
+
+    if (isNotifying){
+        setTimeout(()=>{
+            setIsNotifying(false);
+        }, 2000);
+    }
 
     let sortedSongs = [];
     list.songsOrder.forEach((sid)=>{
@@ -88,6 +93,11 @@ function PrivateListCard(props) {
         store.markListForDeletion(list);
     }
 
+    const handleDuplicate = () => {
+        setIsNotifying(true);
+        store.duplicateList(list.pid);
+    }
+
     let cardElement =
         <ListItem
             id={list.pid}
@@ -138,12 +148,15 @@ function PrivateListCard(props) {
                             </Typography>
                         </Box>
                         <Box sx={{flex: 1}} />
-                        <Box display={isRenaming ? 'none' : ''}>
+                        <Box display={isRenaming ? 'none' : 'flex'} sx={{alignItems: 'center', justifyContent: 'center'}}>
                             <IconButton onClick={handleDeleteList}>
                                 <DeleteForeverRoundedIcon/>
                             </IconButton>
-                            <IconButton>
+                            <IconButton disabled={!auth.loggedIn} sx={{display: isNotifying ? 'none' : ''}} onClick={handleDuplicate}>
                                 <ContentCopyRoundedIcon/>
+                            </IconButton>
+                            <IconButton sx={{display: isNotifying ? '' : 'none'}} disabled>
+                                <TaskAltRoundedIcon sx={{color: 'limegreen'}} />
                             </IconButton>
                             <IconButton onClick={handleStartPlaying}>
                                 <PlayArrowRoundedIcon/>

@@ -12,13 +12,20 @@ import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import PublicSongCard from './PublicSongCard';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
 import AuthContext from '../auth';
+import TaskAltRoundedIcon from '@mui/icons-material/TaskAltRounded';
 
 function PublicListCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     const { list } = props;
     const [expanded, setExpanded] = useState(false);
-    const [plays, setPlays] = useState(0);
+    const [isNotifying, setIsNotifying] = useState(false);
+
+    if (isNotifying){
+        setTimeout(()=>{
+            setIsNotifying(false);
+        }, 2000);
+    }
 
     const ExpandMore = styled((props) => {
         const { expand, ...other } = props;
@@ -42,18 +49,23 @@ function PublicListCard(props) {
     });
 
     const songCards = sortedSongs.map((song, index)=>{
-        return <PublicSongCard key={"song-" + song.sid} index={index} song={song} sortedSongs={sortedSongs} list={list} plays={plays} setPlays={setPlays} />
+        return <PublicSongCard key={"song-" + song.sid} index={index} song={song} sortedSongs={sortedSongs} list={list}/>
     })
 
     const isPlaying = store.playingSongIndex !== -1 && store.playingSongs.length > 0 && store.playingSongs[store.playingSongIndex].PlaylistPid === list.pid;
 
     const handleStartPlaying = () => {
-        store.startPlaying(0, sortedSongs, list, plays, setPlays);
+        store.startPlaying(0, sortedSongs, list);
     }
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
+
+    const handleDuplicate = () => {
+        setIsNotifying(true);
+        store.duplicateList(list.pid);
+    }
 
     let cardElement =
         <ListItem
@@ -82,8 +94,11 @@ function PublicListCard(props) {
                     {list.dislikes}
                     </Typography>
                     <Box sx={{flex: 1}} />
-                    <IconButton disabled={!auth.loggedIn}>
+                    <IconButton disabled={!auth.loggedIn} sx={{display: isNotifying ? 'none' : ''}} onClick={handleDuplicate}>
                         <ContentCopyRoundedIcon sx={{fontSize: '1.2em'}}/>
+                    </IconButton>
+                    <IconButton sx={{display: isNotifying ? 'flex' : 'none'}} disabled>
+                        <TaskAltRoundedIcon sx={{color: 'limegreen', fontSize: '1.2em'}} />
                     </IconButton>
                     <ExpandMore
                         expand={expanded}
@@ -102,7 +117,7 @@ function PublicListCard(props) {
                             </Typography>
                             <Box sx={{flex: 1}}/>
                             <Typography color={'GrayText'}>
-                                {`Listens ${list.plays + plays}`}
+                                {`Listens ${list.plays}`}
                             </Typography>
                         </Box>
                         <Divider/>

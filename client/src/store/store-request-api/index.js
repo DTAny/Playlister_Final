@@ -9,7 +9,7 @@ export const createPlaylist = (newListName) => {
         name: newListName,
     })
 }
-export const forkPlaylist = (id) => api.post(`/playlist/${id}`)
+export const duplicatePlaylist = (id) => api.post(`/playlist/${id}`)
 export const deletePlaylistById = (id) => api.delete(`/playlist/${id}`)
 export const getAllPlaylists = () => api.get(`/playlist`)
 export const getUserPlaylists = () => api.get(`/playlist/user`)
@@ -70,7 +70,8 @@ const apis = {
     deleteLikeById,
     editLikeById,
     incrPlaysById,
-    publishListById
+    publishListById,
+    duplicatePlaylist
 }
 
 export default apis

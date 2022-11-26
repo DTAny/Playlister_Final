@@ -16,7 +16,6 @@ export default function ListWorkspace(props) {
     const { store } = useContext(GlobalStoreContext);
     const [isClosing, setIsClosing] = useState(false);
     let isDisplay = tab === index;
-    const [ song, setSong ] = useState(null);
     const list = store.currentList;
 
     const handleClose = () => {

@@ -205,7 +205,7 @@ function GlobalStoreContextProvider(props) {
             }
             case GlobalStoreActionType.START_PLAYING: {
                 return setStore({
-                    lists: store.lists,
+                    lists: payload.lists,
                     privateLists: store.privateLists,
                     currentList: store.currentList,
                     currentSongIndex : -1,
@@ -567,21 +567,25 @@ function GlobalStoreContextProvider(props) {
             if ((store.playingList === null || list.pid !== store.playingList.pid) && list.published){
                 let response = await api.incrPlaysById(list.pid);
                 if (response.data.success){
-                    if (plays !== null && setPlays !== null) setPlays(plays + 1);
-                    storeReducer({
-                        type: GlobalStoreActionType.START_PLAYING,
-                        payload: {
-                            playingSongIndex: index,
-                            playingSongs: songs,
-                            playingList: list
-                        }
-                    })
+                    response = await api.getAllPlaylists();
+                    if (response.data.success){
+                        storeReducer({
+                            type: GlobalStoreActionType.START_PLAYING,
+                            payload: {
+                                lists: response.data.data,
+                                playingSongIndex: index,
+                                playingSongs: songs,
+                                playingList: list
+                            }
+                        })
+                    }
                 }
             }
             else {
                 storeReducer({
                     type: GlobalStoreActionType.START_PLAYING,
                     payload: {
+                        lists: store.lists,
                         playingSongIndex: index,
                         playingSongs: songs,
                         playingList: list
@@ -623,6 +627,12 @@ function GlobalStoreContextProvider(props) {
             }
         }
         asyncPublishList(id);
+    }
+    store.duplicateList = async (id) => {
+        let response = await api.duplicatePlaylist(id)
+        if (response.data.success) {
+            store.loadLists();
+        }
     }
 
     return (

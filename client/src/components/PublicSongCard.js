@@ -1,17 +1,17 @@
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import ListItem from '@mui/material/ListItem';
 import { Card, CardHeader, IconButton } from '@mui/material';
 import GlobalStoreContext from '../store';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 
 function PublicSongCard(props) {
-    const { song, index, sortedSongs, list, plays, setPlays } = props;
+    const { song, index, sortedSongs, list } = props;
     const { store } = useContext(GlobalStoreContext);
 
     const isPlaying = store.playingSongIndex !== -1 && store.playingSongs.length > 0 && store.playingSongs[store.playingSongIndex].sid === song.sid;
 
     const handleStartPlaying = () => {
-        store.startPlaying(index, sortedSongs, list, plays, setPlays);
+        store.startPlaying(index, sortedSongs, list);
     }
 
     let cardElement =

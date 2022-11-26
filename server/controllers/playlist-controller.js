@@ -68,7 +68,7 @@ createPlaylist = async (req, res) => {
     });
 }
 
-forkPlaylist = async (req, res) => {
+duplicatePlaylist = async (req, res) => {
     const user = await User.findByPk(req.userId, {include: Playlist});
     console.log("user found: " + JSON.stringify(user));
     const playlist = await Playlist.findByPk(req.params.id);
@@ -99,20 +99,22 @@ forkPlaylist = async (req, res) => {
 
     let newSongsOrder = [];
     let tmp = playlist.songsOrder;
-    tmp.forEach(async (sid)=>{
-        let oldSong = await song.findByPk(sid);
+    for (let i = 0; i < tmp.length; i++){
+        let oldSong = await Song.findByPk(tmp[i]);
         let newSong = await Song.create({
-            PlaylistPid: newPlaylist.UserUid,
+            PlaylistPid: newPlaylist.pid,
             title: oldSong.title,
             artist: oldSong.artist,
             youtubeId: oldSong.youtubeId
         })
         newSongsOrder.push(newSong.sid);
-    })
+    }
+    console.log("songsOrder: " + JSON.stringify(newSongsOrder));
     newPlaylist.songsOrder = newSongsOrder;
     await newPlaylist.save();
 
     return res.status(200).json({
+        success: true,
         playlist: newPlaylist
     });
 }
@@ -529,7 +531,7 @@ getComments = async (req, res) => {
 
 module.exports = {
     createPlaylist,
-    forkPlaylist,
+    duplicatePlaylist,
     deletePlaylist,
     getPlaylistById,
     getAllPlaylists,
