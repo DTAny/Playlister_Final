@@ -443,9 +443,6 @@ function GlobalStoreContextProvider(props) {
         asyncSetCurrentList(id);
     }
 
-    store.getPlaylistSize = function() {
-        return store.currentList.Songs.length;
-    }
     store.createSong = async (index, song) => {
         let response = await api.addSongById(store.currentList.pid, index, song.title, song.artist, song.youtubeId);
         if (response.data.success){
@@ -499,7 +496,7 @@ function GlobalStoreContextProvider(props) {
         asyncUpdateCurrentList(index, songData)
     }
     store.addNewSong = () => {
-        let playlistSize = store.getPlaylistSize();
+        let playlistSize = store.currentList.songsOrder.length;
         store.addCreateSongTransaction(playlistSize, "Untitled", "?", "OdFPsSHau_Q");
     }
     store.addCreateSongTransaction = (index, title, artist, youTubeId) => {
