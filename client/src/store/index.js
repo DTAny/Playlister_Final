@@ -387,24 +387,17 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-    store.markListForDeletion = function (id) {
-        async function getListToDelete(id) {
-            let response = await api.getPlaylistById(id);
-            if (response.data.success) {
-                let playlist = response.data.playlist;
-                storeReducer({
-                    type: GlobalStoreActionType.MARK_LIST_FOR_DELETION,
-                    payload: playlist
-                });
-            }
-        }
-        getListToDelete(id);
+    store.markListForDeletion = function (playlist) {
+        storeReducer({
+            type: GlobalStoreActionType.MARK_LIST_FOR_DELETION,
+            payload: playlist
+        });
     }
     store.deleteList = function (id) {
         async function processDelete(id) {
             let response = await api.deletePlaylistById(id);
             if (response.data.success) {
-                store.loadListPrivate();
+                store.loadLists();
             }
         }
         processDelete(id);

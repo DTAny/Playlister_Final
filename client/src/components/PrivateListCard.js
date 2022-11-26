@@ -84,6 +84,10 @@ function PrivateListCard(props) {
         store.publishList(list.pid);
     }
 
+    const handleDeleteList = () => {
+        store.markListForDeletion(list);
+    }
+
     let cardElement =
         <ListItem
             id={list.pid}
@@ -135,7 +139,7 @@ function PrivateListCard(props) {
                         </Box>
                         <Box sx={{flex: 1}} />
                         <Box display={isRenaming ? 'none' : ''}>
-                            <IconButton>
+                            <IconButton onClick={handleDeleteList}>
                                 <DeleteForeverRoundedIcon/>
                             </IconButton>
                             <IconButton>

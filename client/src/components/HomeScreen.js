@@ -10,6 +10,7 @@ import GlobalStoreContext from '../store';
 import UserList from './UserList';
 import PrivateList from './PrivateList';
 import ListWorkspace from './ListWorkspace';
+import MUIDeleteListModal from './MUIDeleteListModal';
 
 export default function HomeScreen() {
     const [tab, setTab] = useState(1);
@@ -39,6 +40,9 @@ export default function HomeScreen() {
                 </Grid>
             </Grid>
             <Statusbar />
+            {store.markedList === null ? "" : (
+                <MUIDeleteListModal />
+            )}
         </Box>
     );
 }
