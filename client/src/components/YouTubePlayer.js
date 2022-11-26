@@ -4,33 +4,24 @@ import GlobalStoreContext from '../store';
 
 export default function YouTubePlayer() {
     const { store } = useContext(GlobalStoreContext);
-    // let playlist = [
-    //     "mqmxkGjow1A",
-    //     "8RbXIMZmVv8",
-    //     "8UbNbor3OqQ"
-    // ];
+    
     let playlist = store.playingSongs.map((song) => song.youtubeId);
 
-    // THIS IS THE INDEX OF THE SONG CURRENTLY IN USE IN THE PLAYLIST
     let playingSongIndex = store.playingSongIndex;
 
     const playerOptions = {
         height: '100%',
         width: '100%',
         playerVars: {
-            // https://developers.google.com/youtube/player_parameters
             autoplay: 0,
         },
     };
 
-    // THIS FUNCTION LOADS THE CURRENT SONG INTO
-    // THE PLAYER AND PLAYS IT
     function loadAndPlayCurrentSong(player) {
         let song = playlist[playingSongIndex];
         player.loadVideoById(song);
     }
 
-    // THIS FUNCTION INCREMENTS THE PLAYLIST SONG TO THE NEXT ONE
     function incSong() {
         playingSongIndex++;
         playingSongIndex = playingSongIndex % playlist.length;
@@ -41,10 +32,6 @@ export default function YouTubePlayer() {
         store.playerReady(event.target);
     }
 
-    // THIS IS OUR EVENT HANDLER FOR WHEN THE YOUTUBE PLAYER'S STATE
-    // CHANGES. NOTE THAT playerStatus WILL HAVE A DIFFERENT INTEGER
-    // VALUE TO REPRESENT THE TYPE OF STATE CHANGE. A playerStatus
-    // VALUE OF 0 MEANS THE SONG PLAYING HAS ENDED.
     function onPlayerStateChange(event) {
         let playerStatus = event.data;
         let player = event.target;

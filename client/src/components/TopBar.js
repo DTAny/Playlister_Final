@@ -5,11 +5,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import QueueMusicIcon from '@mui/icons-material/QueueMusic';
 import PublicIcon from '@mui/icons-material/Public';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
-import GlobalStoreContext from '../store';
 
 export default function TopBar(props) {
     const { auth } = useContext(AuthContext);
-    const { store } = useContext(GlobalStoreContext);
     const {setTab, tab, setSearchStr} = props;
 
     const Search = styled('div')(({ theme }) => ({

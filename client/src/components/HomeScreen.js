@@ -1,7 +1,5 @@
 import { useContext, useState, useEffect } from 'react'
-import AuthContext from '../auth'
-import { useNavigate } from 'react-router-dom';
-import { Box, CssBaseline, Grid, Tabs } from '@mui/material';
+import { Box, CssBaseline, Grid } from '@mui/material';
 import TopBar from './TopBar';
 import Statusbar from './Statusbar';
 import PublicList from './PublicList';

@@ -1,6 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
-import AuthContext from '../auth'
-import { useNavigate } from 'react-router-dom';
+import { useContext, useState } from 'react'
 import { Box, Button, Grid, List, Menu, MenuItem, Paper, Slide, Typography } from '@mui/material';
 import SortRoundedIcon from '@mui/icons-material/SortRounded';
 import GlobalStoreContext from '../store';

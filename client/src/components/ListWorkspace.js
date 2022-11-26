@@ -1,6 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
-import AuthContext from '../auth'
-import { useNavigate } from 'react-router-dom';
+import { useContext, useState } from 'react'
 import { Box, Button, ButtonGroup, Grid, IconButton, List, Paper, Slide, Typography } from '@mui/material';
 import GlobalStoreContext from '../store';
 import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';

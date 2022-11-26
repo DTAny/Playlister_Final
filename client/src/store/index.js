@@ -1,12 +1,10 @@
-import { createContext, useContext, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { createContext, useState } from 'react'
 import jsTPS from '../common/jsTPS'
 import api from './store-request-api'
 import CreateSong_Transaction from '../transactions/CreateSong_Transaction'
 import MoveSong_Transaction from '../transactions/MoveSong_Transaction'
 import RemoveSong_Transaction from '../transactions/RemoveSong_Transaction'
 import UpdateSong_Transaction from '../transactions/UpdateSong_Transaction'
-import AuthContext from '../auth'
 
 export const GlobalStoreContext = createContext({});
 console.log("create GlobalStoreContext");
@@ -52,9 +50,6 @@ function GlobalStoreContextProvider(props) {
         markedList: null,
         player: null,
     });
-    const navigate = useNavigate();
-
-    const { auth } = useContext(AuthContext);
 
     const storeReducer = (action) => {
         const { type, payload } = action;
@@ -562,7 +557,7 @@ function GlobalStoreContextProvider(props) {
             }
         })
     }
-    store.startPlaying = (index, songs, list, plays = null, setPlays = null) => {
+    store.startPlaying = (index, songs, list) => {
         async function asyncStartPlaying(){
             if ((store.playingList === null || list.pid !== store.playingList.pid) && list.published){
                 let response = await api.incrPlaysById(list.pid);
