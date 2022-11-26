@@ -67,6 +67,37 @@ function PublicListCard(props) {
         store.duplicateList(list.pid);
     }
 
+    let isLike = false;
+    let isDislike = false;
+    let userLike = list.Likes.filter((v)=> v.UserUid === auth.user.uid);
+    if (userLike.length > 0){
+        isLike = userLike[0].isLike;
+        isDislike = !userLike[0].isLike;
+    }
+
+    const handleLike = () => {
+        if (isLike){
+            store.deleteLike(list.pid);
+        }
+        else if (isDislike){
+            store.editLike(list.pid, true);
+        }
+        else{
+            store.addLike(list.pid, true);
+        }
+    }
+    const handleDislike = () => {
+        if (isDislike){
+            store.deleteLike(list.pid);
+        }
+        else if (isLike){
+            store.editLike(list.pid, false);
+        }
+        else{
+            store.addLike(list.pid, false);
+        }
+    }
+
     let cardElement =
         <ListItem
             id={list.pid}
@@ -81,14 +112,14 @@ function PublicListCard(props) {
                     </IconButton>
                 }/>
                 <CardActions>
-                    <IconButton disabled={!auth.loggedIn}>
-                        <ThumbUpRoundedIcon sx={{fontSize: '1.2em'}}/>
+                    <IconButton onClick={handleLike} disabled={!auth.loggedIn}>
+                        <ThumbUpRoundedIcon sx={{fontSize: '1.2em', color: isLike ? 'darkorange' : ''}}/>
                     </IconButton>
                     <Typography variant='h6' color={'text.secondary'} ml={1}>
                     {list.likes}
                     </Typography>
-                    <IconButton disabled={!auth.loggedIn}>
-                        <ThumbDownRoundedIcon sx={{fontSize: '1.2em'}}/>
+                    <IconButton onClick={handleDislike} disabled={!auth.loggedIn}>
+                        <ThumbDownRoundedIcon sx={{fontSize: '1.2em', color: isDislike ? 'firebrick' : ''}}/>
                     </IconButton>
                     <Typography variant='h6' color={'text.secondary'} ml={1}>
                     {list.dislikes}

@@ -412,11 +412,11 @@ deleteLike = async (req, res) => {
     }
     let like = await Like.findOne({where: {
         UserUid: req.userId,
-        Playlist: res.params.id
+        PlaylistPid: req.params.id
     }})
     if (like){
-        playlist.likes -= body.isLike ? 1 : 0;
-        playlist.dislikes -= body.isLike ? 0 : 1;
+        playlist.likes -= like.isLike ? 1 : 0;
+        playlist.dislikes -= like.isLike ? 0 : 1;
         await playlist.save();
         await like.destroy();
     }
@@ -459,12 +459,12 @@ editLike = async (req, res) => {
             message: 'Like not found!',
         });
     }
+    playlist.likes += body.isLike - like.isLike;
+    playlist.dislikes -= body.isLike - like.isLike
+    await playlist.save();
     like.isLike = body.isLike;
     await like.save();
     console.log(JSON.stringify(like));
-    playlist.likes += body.isLike ? 1 : 0;
-    playlist.dislikes += body.isLike ? 0 : 1;
-    await playlist.save();
     return res.status(200).json({
         success: true,
         like: like,

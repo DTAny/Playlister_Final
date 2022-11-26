@@ -15,6 +15,7 @@ import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
 import TaskAltRoundedIcon from '@mui/icons-material/TaskAltRounded';
+import HeadphonesRoundedIcon from '@mui/icons-material/HeadphonesRounded';
 
 function PrivateListCard(props) {
     const { store } = useContext(GlobalStoreContext);
@@ -110,15 +111,19 @@ function PrivateListCard(props) {
                     <CardActionArea sx={{display: isRenaming ? 'none' : ''}} ref={buttonRef}>
                         <CardHeader title={list.name} subheader={"By " + list.ownerUsername} action={
                             <Box sx={{display: list.published ? 'flex' : 'none', alignItems: 'center'}} >
-                                <ThumbUpRoundedIcon sx={{fontSize: '1.2em'}}/>
+                                <ThumbUpRoundedIcon sx={{fontSize: '1.2em', color: 'darkorange'}}/>
                                 <Typography display={'inline'} variant='h6' color={'text.secondary'} ml={1}>
                                 {list.likes}
                                 </Typography>
-                                <ThumbDownRoundedIcon sx={{fontSize: '1.2em', ml: '0.5em'}}/>
+                                <ThumbDownRoundedIcon sx={{fontSize: '1.2em', ml: '0.5em', color: 'firebrick'}}/>
                                 <Typography display={'inline'} variant='h6' color={'text.secondary'} ml={1}>
                                 {list.dislikes}
                                 </Typography>
-                                <PublicRoundedIcon sx={{ml: '0.5em', fontSize: '1.3em', color: '#8882F4'}} />
+                                <HeadphonesRoundedIcon sx={{fontSize: '1.2em', ml: '0.5em', color: 'blueviolet'}} />
+                                <Typography display={'inline'} variant='h6' color={'text.secondary'} ml={1}>
+                                {list.plays}
+                                </Typography>
+                                <PublicRoundedIcon sx={{ml: '0.5em', fontSize: '1.2em', color: '#8882F4'}} />
                             </Box>
                         }/>
                     </CardActionArea>

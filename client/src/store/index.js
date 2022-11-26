@@ -634,6 +634,24 @@ function GlobalStoreContextProvider(props) {
             store.loadLists();
         }
     }
+    store.addLike = async (id, isLike) => {
+        let response = await api.addLikeById(id, isLike)
+        if (response.data.success) {
+            store.loadLists();
+        }
+    }
+    store.editLike = async (id, isLike) => {
+        let response = await api.editLikeById(id, isLike)
+        if (response.data.success) {
+            store.loadLists();
+        }
+    }
+    store.deleteLike = async (id) => {
+        let response = await api.deleteLikeById(id)
+        if (response.data.success) {
+            store.loadLists();
+        }
+    }
 
     return (
         <GlobalStoreContext.Provider value={{
