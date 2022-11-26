@@ -55,12 +55,14 @@ createPlaylist = async (req, res) => {
         user.nextNum++;
     }
     while(existPlaylist.length !== 0);
-    const newPlaylist = await Playlist.create({
+    let newPlaylist = await Playlist.create({
         UserUid: user.uid,
         name: newName,
         ownerUsername: user.username,
+        editedAt: Date.now(),
     });
     await user.save();
+    newPlaylist = await Playlist.findByPk(newPlaylist.pid, {include: Song});
     return res.status(200).json({
         playlist: newPlaylist
     });
@@ -92,6 +94,7 @@ forkPlaylist = async (req, res) => {
         UserUid: user.uid,
         name: newName,
         ownerUsername: user.username,
+        editedAt: Date.now(),
     });
 
     let newSongsOrder = [];
@@ -182,6 +185,7 @@ updatePlaylist = async (req, res) => {
     }
     playlist.name = body.playlist.name;
     playlist.songsOrder = body.playlist.songsOrder;
+    playlist.editedAt = Date.now();
     await playlist.save();
     console.log("SUCCESS!!!");
     return res.status(200).json({
@@ -224,6 +228,7 @@ addSong = async (req, res) => {
     let tmp = playlist.songsOrder;
     tmp.splice(body.index, 0, song.sid);
     playlist.songsOrder = tmp;
+    playlist.editedAt = Date.now();
     console.log(JSON.stringify(playlist));
     await playlist.save();
     return res.status(200).json({
@@ -249,6 +254,7 @@ deleteSong = async (req, res) => {
     let tmp = playlist.songsOrder;
     let sid = tmp.splice(req.params.index, 1);
     playlist.songsOrder = tmp;
+    playlist.editedAt = Date.now();
     await playlist.save();
     await Song.destroy({where: {sid: sid}});
     return res.status(200).json({
@@ -291,7 +297,8 @@ editSong = async (req, res) => {
     song.artist = body.artist;
     song.youtubeId = body.youtubeId;
     await song.save();
-
+    playlist.editedAt = Date.now();
+    playlist.save();
     return res.status(200).json({
         success: true,
         song: song,

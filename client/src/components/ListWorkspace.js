@@ -7,17 +7,28 @@ import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRound
 import UndoRoundedIcon from '@mui/icons-material/UndoRounded';
 import RedoRoundedIcon from '@mui/icons-material/RedoRounded';
 import PublicSongCard from './PublicSongCard';
+import PrivateSongCard from './PrivateSongCard';
+import MUIEditSongModal from './MUIEditSongModal';
 
 export default function ListWorkspace(props) {
     const { tab, index,} = props;
     const { store } = useContext(GlobalStoreContext);
     const [isClosing, setIsClosing] = useState(false);
     let isDisplay = tab === index;
+    const [ song, setSong ] = useState(null);
     const list = store.currentList;
 
     const handleClose = () => {
         setIsClosing(true);
         store.closeCurrentList();
+    }
+
+    const handleUndo = () => {
+        store.undo();
+    }
+
+    const handleRedo = () => {
+        store.redo();
     }
 
     let listPart = (
@@ -43,42 +54,51 @@ export default function ListWorkspace(props) {
             if (list.published){
                 listPart = (
                     <List>
-                        {sortedSongs.map((song, index)=> <PublicSongCard key={"private-song-" + song.sid} index={index} song={song} sortedSongs={sortedSongs} list={list} plays={0} setPlays={null} />)}
+                        {sortedSongs.map((song, index)=> <PublicSongCard key={"private-song-" + song.sid} index={index} song={song} sortedSongs={sortedSongs} list={list} />)}
+                    </List>
+                )
+            }
+            else {
+                listPart = (
+                    <List>
+                        {sortedSongs.map((song, index)=> <PrivateSongCard key={"private-song-" + song.sid} index={index} song={song} sortedSongs={sortedSongs} list={list} setSong={setSong} />)}
                     </List>
                 )
             }
         }
 
-
         return (
-            <Slide in={!isClosing} timeout={400} direction={'right'} unmountOnExit>
-                <Box sx={{height: '100%'}} >
-                    <Paper elevation={4} sx={{height: '100%', borderRadius: '50px', padding: '1em 2em 2em 2em'}} >
-                        <Grid container>
-                            <Grid item md={12} sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-                                <IconButton onClick={handleClose}>
-                                    <ArrowBackIosNewRoundedIcon sx={{fontSize: '1.5em'}} />
-                                </IconButton>
-                                <Typography flex={1} sx={{fontFamily: "'Segoe Script'", display: 'flex', alignItems: 'center', fontSize: '1.2em'}}>
-                                    {list.name}
-                                </Typography>
-                                <ButtonGroup variant="outlined" sx={{height: '90%', display: list.published ? 'none' : ''}}>
-                                    <Button disabled={store.canUndo() ? false : true} startIcon={<UndoRoundedIcon />}>Undo</Button>
-                                    <Button disabled={store.canRedo() ? false : true} startIcon={<RedoRoundedIcon />}>Redo</Button>
-                                </ButtonGroup>
+            <Box>
+                <Slide in={!isClosing} timeout={400} direction={'right'} unmountOnExit>
+                    <Box sx={{height: '100%'}} >
+                        <Paper elevation={4} sx={{height: '100%', borderRadius: '50px', padding: '1em 2em 2em 2em'}} >
+                            <Grid container>
+                                <Grid item md={12} sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                                    <IconButton onClick={handleClose}>
+                                        <ArrowBackIosNewRoundedIcon sx={{fontSize: '1.5em'}} />
+                                    </IconButton>
+                                    <Typography flex={1} sx={{fontFamily: "'Segoe Script'", display: 'flex', alignItems: 'center', fontSize: '1.2em'}}>
+                                        {list.name}
+                                    </Typography>
+                                    <ButtonGroup variant="outlined" sx={{height: '90%', display: list.published ? 'none' : ''}}>
+                                        <Button onClick={handleUndo} disabled={store.canUndo() ? false : true} startIcon={<UndoRoundedIcon />}>Undo</Button>
+                                        <Button onClick={handleRedo} disabled={store.canRedo() ? false : true} startIcon={<RedoRoundedIcon />}>Redo</Button>
+                                    </ButtonGroup>
+                                </Grid>
+                                <Grid item md={12} sx={{height: 'calc(100vh - 25em)', overflowY: 'scroll', borderTop: '#A6B0B26E solid 2px', p: '0.5em'}}>
+                                    {listPart}
+                                </Grid>
+                                <Grid item md={12}>
+                                    <Button fullWidth variant='contained' color={'info'} sx={{display: list.published ? 'none' : ''}}>
+                                        Add new song
+                                    </Button>
+                                </Grid>
                             </Grid>
-                            <Grid item md={12} sx={{height: 'calc(100vh - 25em)', overflowY: 'scroll', borderTop: '#A6B0B26E solid 2px', p: '0.5em'}}>
-                                {listPart}
-                            </Grid>
-                            <Grid item md={12}>
-                                <Button fullWidth variant='contained' color={'info'} sx={{display: list.published ? 'none' : ''}}>
-                                    Add new song
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </Box>
-            </Slide>
+                        </Paper>
+                    </Box>
+                </Slide>
+                {song === null ? "" : <MUIEditSongModal song={song} />}
+            </Box>
         );
     }
     else return "";

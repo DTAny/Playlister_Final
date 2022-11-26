@@ -35,6 +35,10 @@ const Playlist = sequelize.define('Playlist', {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
+    editedAt: {
+        type: DataTypes.DATE,
+        defaultValue: null
+    },
     publishedAt: {
         type: DataTypes.DATE,
         defaultValue: null

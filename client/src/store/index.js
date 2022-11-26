@@ -283,7 +283,7 @@ function GlobalStoreContextProvider(props) {
     store.createNewList = async function () {
         let newListName = "Untitled";
         const response = await api.createPlaylist(newListName);
-        console.log("createNewList response: " + response);
+        console.log("createNewList response: " + JSON.stringify(response));
         if (response.status === 200) {
             tps.clearAllTransactions();
             let newList = response.data.playlist;
@@ -441,36 +441,39 @@ function GlobalStoreContextProvider(props) {
         let list = store.currentList;
 
         if (start < end) {
-            let temp = list.songs[start];
+            let temp = list.songsOrder[start];
             for (let i = start; i < end; i++) {
-                list.songs[i] = list.songs[i + 1];
+                list.songsOrder[i] = list.songsOrder[i + 1];
             }
-            list.songs[end] = temp;
+            list.songsOrder[end] = temp;
         }
         else if (start > end) {
-            let temp = list.songs[start];
+            let temp = list.songsOrder[start];
             for (let i = start; i > end; i--) {
-                list.songs[i] = list.songs[i - 1];
+                list.songsOrder[i] = list.songsOrder[i - 1];
             }
-            list.songs[end] = temp;
+            list.songsOrder[end] = temp;
         }
 
         store.updateCurrentList();
     }
     store.removeSong = function(index) {
         let list = store.currentList;      
-        list.songs.splice(index, 1); 
+        list.Songs.splice(index, 1); 
 
         store.updateCurrentList();
     }
     store.updateSong = function(index, songData) {
-        let list = store.currentList;
-        let song = list.songs[index];
-        song.title = songData.title;
-        song.artist = songData.artist;
-        song.youTubeId = songData.youTubeId;
-
-        store.updateCurrentList();
+        async function asyncUpdateCurrentList(index, songData){
+            let response = await api.editSongById(store.currentList.pid, index, songData.title, songData.artist, songData.youtubeId);
+            if (response.data.success){
+                response = await api.getPlaylistById(store.currentList.pid);
+                if (response.data.success){
+                    store.openList(response.data.playlist);
+                }
+            }
+        }
+        asyncUpdateCurrentList(index, songData)
     }
     store.addNewSong = () => {
         let playlistSize = store.getPlaylistSize();
@@ -496,13 +499,7 @@ function GlobalStoreContextProvider(props) {
         let transaction = new RemoveSong_Transaction(store, index, song);
         tps.addTransaction(transaction);
     }
-    store.addUpdateSongTransaction = function (index, newSongData) {
-        let song = store.currentList.songs[index];
-        let oldSongData = {
-            title: song.title,
-            artist: song.artist,
-            youTubeId: song.youTubeId
-        };
+    store.addUpdateSongTransaction = function (index, newSongData, oldSongData) {
         let transaction = new UpdateSong_Transaction(this, index, oldSongData, newSongData);        
         tps.addTransaction(transaction);
     }

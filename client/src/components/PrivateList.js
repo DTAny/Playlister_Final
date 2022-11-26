@@ -32,8 +32,8 @@ export default function PrivateList(props) {
     }
     else if (sortMode === 2){
         sortedList = sortedList.sort((a, b)=>{
-            let aTime = Date.parse(a.updatedAt);
-            let bTime = Date.parse(b.updatedAt);
+            let aTime = Date.parse(a.editedAt);
+            let bTime = Date.parse(b.editedAt);
             return bTime - aTime;
         })
     }
