@@ -69,10 +69,12 @@ function PublicListCard(props) {
 
     let isLike = false;
     let isDislike = false;
-    let userLike = list.Likes.filter((v)=> v.UserUid === auth.user.uid);
-    if (userLike.length > 0){
-        isLike = userLike[0].isLike;
-        isDislike = !userLike[0].isLike;
+    if (auth.user){
+        let userLike = list.Likes.filter((v)=> v.UserUid === auth.user.uid);
+        if (userLike.length > 0){
+            isLike = userLike[0].isLike;
+            isDislike = !userLike[0].isLike;
+        }
     }
 
     const handleLike = () => {

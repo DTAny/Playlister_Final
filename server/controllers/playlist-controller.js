@@ -324,10 +324,6 @@ addComment = async (req, res) => {
             message: 'Playlist not found!',
         });
     }
-    if (playlist.UserUid != req.userId){
-        console.log("incorrect user!");
-        return res.status(400).json({ success: false, description: "authentication error" });
-    }
     if (!playlist.published){
         console.log("Playlist did not publish.");
         return res.status(400).json({ success: false, description: "Playlist did not publish."});
@@ -361,10 +357,6 @@ addLike = async (req, res) => {
         return res.status(404).json({
             message: 'Playlist not found!',
         });
-    }
-    if (playlist.UserUid != req.userId){
-        console.log("incorrect user!");
-        return res.status(400).json({ success: false, description: "authentication error" });
     }
     if (!playlist.published){
         console.log("Playlist did not publish.");
@@ -402,10 +394,6 @@ deleteLike = async (req, res) => {
             message: 'Playlist not found!',
         });
     }
-    if (playlist.UserUid != req.userId){
-        console.log("incorrect user!");
-        return res.status(400).json({ success: false, description: "authentication error" });
-    }
     if (!playlist.published){
         console.log("Playlist did not publish.");
         return res.status(400).json({ success: false, description: "Playlist did not publish."});
@@ -442,18 +430,14 @@ editLike = async (req, res) => {
             message: 'Playlist not found!',
         });
     }
-    if (playlist.UserUid != req.userId){
-        console.log("incorrect user!");
-        return res.status(400).json({ success: false, description: "authentication error" });
-    }
     if (!playlist.published){
         console.log("Playlist did not publish.");
         return res.status(400).json({ success: false, description: "Playlist did not publish."});
     }
-    let like = await Like.findOne({
+    let like = await Like.findOne({where: {
         PlaylistPid: playlist.pid,
         UserUid: req.userId,
-    });
+    }});
     if (!like){
         return res.status(404).json({
             message: 'Like not found!',
