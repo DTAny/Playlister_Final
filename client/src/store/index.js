@@ -528,9 +528,7 @@ function GlobalStoreContextProvider(props) {
         tps.addTransaction(transaction);
     }
     store.addRemoveSongTransaction = () => {
-        let index = store.currentSongIndex;
-        let song = store.currentList.songs[index];
-        let transaction = new RemoveSong_Transaction(store, index, song);
+        let transaction = new RemoveSong_Transaction(store, store.currentSongIndex, store.currentSong);
         tps.addTransaction(transaction);
     }
     store.addUpdateSongTransaction = function (index, newSongData, oldSongData) {
@@ -561,16 +559,6 @@ function GlobalStoreContextProvider(props) {
             type: GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE,
             payload: null
         });
-    }
-
-    store.showRemoveSongModal = (index, song) => {
-        storeReducer({
-            type: GlobalStoreActionType.REMOVE_SONG,
-            payload: {
-                currentSongIndex: index,
-                currentSong: song,
-            }
-        })
     }
 
     store.playerReady = (player) => {

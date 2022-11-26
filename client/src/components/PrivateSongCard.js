@@ -4,9 +4,10 @@ import { Box, Card, CardActionArea, CardActions, CardHeader, IconButton } from '
 import GlobalStoreContext from '../store';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 
 function PrivateSongCard(props) {
-    const { song, index, sortedSongs, list, setSong } = props;
+    const { song, index, sortedSongs, list } = props;
     const { store } = useContext(GlobalStoreContext);
     const [ draggedTo, setDraggedTo ] = useState(0);
 
@@ -43,8 +44,11 @@ function PrivateSongCard(props) {
     }
 
     const handleDoubleClick = () => {
-        setSong(song);
         store.showEditSongModal(index, song);
+    }
+
+    const handleRemove = () => {
+        store.showRemoveSongModal(index, song);
     }
 
     let cardElement =
@@ -67,6 +71,9 @@ function PrivateSongCard(props) {
                     }/>
                 </CardActionArea>
                 <CardActions sx={{display: 'flex', borderTop: '#A6B0B26E solid 1px'}}>
+                    <IconButton onClick={handleRemove}>
+                        <DeleteForeverRoundedIcon />
+                    </IconButton>
                     <Box flex={1} />
                     <IconButton onClick={handleStartPlaying}>
                         <PlayArrowRoundedIcon />

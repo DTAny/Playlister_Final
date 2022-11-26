@@ -9,6 +9,7 @@ import RedoRoundedIcon from '@mui/icons-material/RedoRounded';
 import PublicSongCard from './PublicSongCard';
 import PrivateSongCard from './PrivateSongCard';
 import MUIEditSongModal from './MUIEditSongModal';
+import MUIRemoveSongModal from './MUIRemoveSongModal';
 
 export default function ListWorkspace(props) {
     const { tab, index,} = props;
@@ -65,7 +66,7 @@ export default function ListWorkspace(props) {
             else {
                 listPart = (
                     <List>
-                        {sortedSongs.map((song, index)=> <PrivateSongCard key={"private-song-" + song.sid} index={index} song={song} sortedSongs={sortedSongs} list={list} setSong={setSong} />)}
+                        {sortedSongs.map((song, index)=> <PrivateSongCard key={"private-song-" + song.sid} index={index} song={song} sortedSongs={sortedSongs} list={list} />)}
                     </List>
                 )
             }
@@ -101,8 +102,11 @@ export default function ListWorkspace(props) {
                         </Paper>
                     </Box>
                 </Slide>
-                {song === null ? "" : (
-                    <MUIEditSongModal song={song} />
+                {store.currentSong === null ? "" : (
+                    <Box>
+                        <MUIEditSongModal />
+                        <MUIRemoveSongModal />
+                    </Box>
                 )}
             </Box>
         );

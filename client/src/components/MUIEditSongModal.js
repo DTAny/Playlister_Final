@@ -10,16 +10,18 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    maxWidth: '800px',
+    minWidth: '400px',
     bgcolor: 'background.paper',
     borderRadius: '30px',
     boxShadow: 24,
     p: 4,
 };
 
-export default function MUIEditSongModal(props) {
+export default function MUIEditSongModal() {
     const { store } = useContext(GlobalStoreContext);
-    const { song } = props;
+
+    const song = store.currentSong;
 
     function handleConfirmEditSong(event) {
         event.preventDefault();
