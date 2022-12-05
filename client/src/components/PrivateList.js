@@ -153,7 +153,7 @@ export default function PrivateList(props) {
                             <Grid item md={12} sx={{height: 'calc(100vh - 25em)', overflowY: 'scroll', borderTop: '#A6B0B26E solid 2px', p: '0.5em'}}>
                                 {playlists}
                             </Grid>
-                            <Grid item md={12}>
+                            <Grid item md={12} sx={{height: '1.625em'}}>
                                 <Button variant='contained' color={'info'} sx={{width: '100%'}} onClick={handleNewList}>
                                     Add new List
                                 </Button>

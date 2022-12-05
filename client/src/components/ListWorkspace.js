@@ -90,7 +90,7 @@ export default function ListWorkspace(props) {
                                 <Grid item md={12} sx={{height: 'calc(100vh - 25em)', overflowY: 'scroll', borderTop: '#A6B0B26E solid 2px', p: '0.5em'}}>
                                     {listPart}
                                 </Grid>
-                                <Grid item md={12}>
+                                <Grid item md={12} sx={{height: '2em'}}>
                                     <Button fullWidth variant='contained' color={'info'} sx={{display: list.published ? 'none' : ''}} onClick={handleNewSong}>
                                         Add new song
                                     </Button>
