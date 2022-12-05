@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import YouTube from 'react-youtube';
 import GlobalStoreContext from '../store';
 
-export default function YouTubePlayer() {
+export default function YouTubePlayer(props) {
     const { store } = useContext(GlobalStoreContext);
     
     let playlist = store.playingSongs.map((song) => song.youtubeId);

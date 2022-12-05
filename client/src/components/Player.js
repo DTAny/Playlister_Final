@@ -14,7 +14,6 @@ export default function Player() {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     const [tab, setTab] = useState(0);
-    const [comments, setComments] = useState([]);
 
     let playerPart = <Typography color={'white'} sx={{fontSize: '2rem', textAlign: 'center', fontStyle: 'italic', fontFamily: "'Segoe Script'"}}>
         Pick A Playlist You Like!
@@ -24,11 +23,7 @@ export default function Player() {
         And Enjoy Your Time!
     </Typography>
 
-    let commentsPart = <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%'}}>
-        <Typography color={'black'} sx={{fontSize: '2rem', textAlign: 'center', fontStyle: 'italic', fontFamily: "'Segoe Script'"}}>
-            Share Your Feel!
-        </Typography>
-    </Box>
+    let commentsPart = "";
 
     const handlePreviousSong = () => {
         let length = store.playingSongs.length;
@@ -51,15 +46,27 @@ export default function Player() {
 
     const handleChange = (event, newValue) => {
         setTab(newValue);
-        if (newValue === 1){
-            store.loadComments(store.playingList.pid, setComments);
-        }
     };
 
+    let comments = [];
+    if (store.playingList){
+        comments = store.playingList.Comments;
+    }
+
+    let realTab = 0;
+    if (store.playingList && store.playingList.published) realTab = tab;
+
     if (comments.length > 0) {
-        commentsPart = <List hidden={tab !== 1} disablePadding={true} sx={{height: '100%'}}>
+        commentsPart = <List disablePadding={true} sx={{height: '100%', display: realTab === 1 ? '' : 'none'}}>
             {comments.map((comment) => <PublicCommentCard key={`comment-${comment.cid}`} comment={comment}/>)}
         </List>
+    }
+    else {
+        commentsPart = <Box sx={{display: realTab === 1 ? 'flex' : 'none', alignItems: 'center', justifyContent: 'center', height: '100%'}}>
+            <Typography color={'black'} sx={{fontSize: '2rem', textAlign: 'center', fontStyle: 'italic', fontFamily: "'Segoe Script'"}}>
+                Share Your Feel!
+            </Typography>
+        </Box>
     }
 
     const CommentInput = styled('div')(({ theme }) => ({
@@ -99,14 +106,14 @@ export default function Player() {
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        store.addComment(store.playingList.pid, formData.get('comment'), setComments);
+        store.addComment(store.playingList.pid, formData.get('comment'));
     }
 
     if (store.playingSongs.length > 0) {
         playerPart = <YouTubePlayer />
         controlPanel = <Grid container sx={{height: '100%', p: '0.5em'}}>
             <Grid item md={4} sx={{height: '100%', display: 'flex', flexDirection: 'column', borderRight: '#A6B0B26E solid 2px'}}>
-                <Tabs value={tab} onChange={handleChange} orientation={'vertical'}>
+                <Tabs value={realTab} onChange={handleChange} orientation={'vertical'}>
                     <Tab label="Info" />
                     <Tab label="Comment" sx={{display: store.playingList.published ? '' : 'none'}} />
                 </Tabs>
@@ -127,7 +134,7 @@ export default function Player() {
             </Grid>
             <Grid item md={8}>
                 <Box sx={{height: 'calc(38vh - 8em)', overflowY: 'scroll'}}>
-                    <Box hidden={tab !== 0} sx={{height: '100%', pl: '1em'}}>
+                    <Box hidden={realTab !== 0} sx={{height: '100%', pl: '1em'}}>
                         <Typography variant='h5' textAlign={'center'} sx={{fontFamily: "'Segoe Script'"}}>
                             Now Playing
                         </Typography>

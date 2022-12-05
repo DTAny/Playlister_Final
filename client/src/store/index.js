@@ -15,7 +15,6 @@ export const GlobalStoreActionType = {
     CREATE_NEW_LIST: "CREATE_NEW_LIST",
     LOAD_LISTS: "LOAD_LISTS",
     MARK_LIST_FOR_DELETION: "MARK_LIST_FOR_DELETION",
-    SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     EDIT_SONG: "EDIT_SONG",
     REMOVE_SONG: "REMOVE_SONG",
@@ -23,7 +22,7 @@ export const GlobalStoreActionType = {
     START_PLAYING: "START_PLAYING",
     PAUSE_PLAYING: "PAUSE_PLAYING",
     PLAYER_READY: "PLAYER_READY",
-    LOAD_COMMENTS: "LOAD_COMMENTS",
+    UPDATE_COMMENTS: "UPDATE_COMMENTS",
 }
 
 const tps = new jsTPS();
@@ -134,22 +133,6 @@ function GlobalStoreContextProvider(props) {
                     player: store.player,
                 });
             }
-            case GlobalStoreActionType.SET_CURRENT_LIST: {
-                return setStore({
-                    lists: store.lists,
-                    privateLists: store.privateLists,
-                    currentList: payload,
-                    currentSongIndex : -1,
-                    currentSong : null,
-                    status: Status.NONE,
-                    isPlaying: store.isPlaying,
-                    playingSongs: store.playingSongs,
-                    playingSongIndex: store.playingSongIndex,
-                    playingList: store.playingList,
-                    markedList: null,
-                    player: store.player,
-                });
-            }
             case GlobalStoreActionType.EDIT_SONG: {
                 return setStore({
                     lists: store.lists,
@@ -244,6 +227,22 @@ function GlobalStoreContextProvider(props) {
                     playingList: store.playingList,
                     markedList: null,
                     player: payload.player,
+                });
+            }
+            case GlobalStoreActionType.UPDATE_COMMENTS: {
+                return setStore({
+                    lists: store.lists,
+                    privateLists: store.privateLists,
+                    currentList: store.currentList,
+                    currentSongIndex : -1,
+                    currentSong : null,
+                    status: Status.NONE,
+                    isPlaying: store.isPlaying,
+                    playingSongs: store.playingSongs,
+                    playingSongIndex: store.playingSongIndex,
+                    playingList: payload.playingList,
+                    markedList: null,
+                    player: store.player,
                 });
             }
             default:
@@ -429,20 +428,6 @@ function GlobalStoreContextProvider(props) {
         return store.status === Status.REMOVING_SONG;
     }
 
-    store.setCurrentList = function (id) {
-        async function asyncSetCurrentList(id) {
-            let response = await api.getPlaylistById(id);
-            if (response.data.success) {
-                let playlist = response.data.playlist;
-                storeReducer({
-                    type: GlobalStoreActionType.SET_CURRENT_LIST,
-                    payload: playlist
-                })
-            }
-        }
-        asyncSetCurrentList(id);
-    }
-
     store.createSong = async (index, song) => {
         let response = await api.addSongById(store.currentList.pid, index, song.title, song.artist, song.youtubeId);
         if (response.data.success){
@@ -596,23 +581,22 @@ function GlobalStoreContextProvider(props) {
             payload: {}
         })
     }
-    store.loadComments = (id, setComments) => {
-        async function asyncLoadComments(id){
-            let response = await api.getCommentsById(id);
-            if (response.data.success) {
-                setComments(response.data.comments);
-            }
-        }
-        asyncLoadComments(id);
-    }
-    store.addComment = (id, content, setComments) => {
-        async function asyncAddComment(id, content, setComments){
+    store.addComment = (id, content) => {
+        async function asyncAddComment(id, content){
             let response = await api.addCommentById(id, content);
             if (response.data.success) {
-                store.loadComments(id, setComments);
+                response = await api.getPlaylistById(store.playingList.pid);
+                if (response.data.success){
+                    storeReducer({
+                        type: GlobalStoreActionType.UPDATE_COMMENTS,
+                        payload: {
+                            playingList: response.data.playlist,
+                        }
+                    })
+                }
             }
         }
-        asyncAddComment(id, content, setComments);
+        asyncAddComment(id, content);
     }
     store.publishList = (id) => {
         async function asyncPublishList(id){
