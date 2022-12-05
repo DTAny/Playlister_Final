@@ -26,5 +26,7 @@ router.post('/playlist/:id/publish', auth.verify, PlaylistController.publishPlay
 
 router.put('/playlist/:id/play', PlaylistController.incrPlays)
 
+router.all('/test', PlaylistController.test)
+
 
 module.exports = router
